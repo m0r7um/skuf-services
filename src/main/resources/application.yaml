@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: skufservices
+  datasource:
+    url: jdbc:postgresql://localhost:5432/studs
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: create-drop
