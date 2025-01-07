@@ -1,4 +1,4 @@
-package mortum.skufservices
+package mortum.skufservices.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

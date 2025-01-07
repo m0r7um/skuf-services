@@ -2,6 +2,7 @@ package mortum.skufservices.persistence.model.service
 
 import jakarta.persistence.*
 import mortum.skufservices.persistence.model.order.Order
+import mortum.skufservices.persistence.model.user.User
 import java.util.*
 
 @Entity
@@ -19,4 +20,7 @@ class Service(
     @OneToMany
     @JoinColumn(name = "service_id")
     val orders: List<Order>,
+
+    @ManyToOne
+    val user: User,
 )

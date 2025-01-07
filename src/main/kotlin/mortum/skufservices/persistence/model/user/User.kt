@@ -1,29 +1,26 @@
 package mortum.skufservices.persistence.model.user
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
-import java.time.Instant
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotBlank
+import mortum.skufservices.persistence.model.service.Service
 import java.util.*
 
 @Entity
-@Table(name = "users")
-class User(
+@Table(name = "users", uniqueConstraints = [UniqueConstraint(columnNames = arrayOf("login"))])
+class User(val login: @NotBlank String, val password: @NotBlank String) {
     @Id
-    val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    var id: UUID? = null
 
-    @Column(nullable = false, unique = true)
-    val login: String,
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
+    var roles: MutableSet<Role> = mutableSetOf()
 
-    @Column(nullable = false)
-    val password: String,
-
-    @Column(nullable = false)
-    val name: String,
-
-    @Column(nullable = false)
-    val surname: String,
-
-    val birth: Instant,
-)
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    val services: MutableSet<Service> = mutableSetOf()
+}
