@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация поставщика</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Rubik', Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .header h1 {
+      font-family: 'Rubik', Arial, sans-serif;
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .header h1 .blue {
+      color: #0074d9;
+    }
+
+    .header h1 .red {
+      color: #ff0000;
+    }
+
+    .auth-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .auth-container h1 {
+      color: #005baa;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .button, .link-button {
+      display: block;
+      width: 100%; /* Одинаковая ширина для всех кнопок */
+      max-width: 360px;
+      margin: 10px auto;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      font-family: 'Rubik', Arial, sans-serif;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    .button {
+      background-color: #005baa;
+      color: white;
+      border: none;
+    }
+
+    .button:hover {
+      background-color: #003f7d;
+    }
+
+    .link-button {
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+
+    .link-button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .success-message {
+      color: green;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+
+</head>
+<body>
+<div class="header">
+  <img src="../logo.png" alt="Логотип">
+  <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
+</div>
+<div class="auth-container">
+  <h1>Регистрация поставщика</h1>
+  <form id="provider-registration-form">
+    <div class="input-group">
+      <label for="company-name">Название компании</label>
+      <input type="text" id="company-name" name="company-name" required>
+    </div>
+    <div class="input-group">
+      <label for="email">Электронная почта</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="input-group">
+      <label for="phone">Телефон</label>
+      <input type="tel" id="phone" name="phone" required>
+    </div>
+    <div class="input-group">
+      <label for="password">Пароль</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <div class="input-group">
+      <label for="confirm-password">Подтвердите пароль</label>
+      <input type="password" id="confirm-password" name="confirm-password" required>
+    </div>
+    <button type="submit" class="button">Зарегистрироваться</button>
+    <a href="/login" class="link-button">Вернуться на страницу входа</a>
+    <div class="error-message" id="error-message">Ошибка регистрации</div>
+    <div class="success-message" id="success-message">Регистрация успешна!</div>
+  </form>
+</div>
+<script>
+  document.getElementById('provider-registration-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const companyName = document.getElementById('company-name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const errorMessage = document.getElementById('error-message');
+    const successMessage = document.getElementById('success-message');
+
+    errorMessage.style.display = 'none';
+    successMessage.style.display = 'none';
+
+    if (password !== confirmPassword) {
+      errorMessage.textContent = 'Пароли не совпадают';
+      errorMessage.style.display = 'block';
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/auth/provider/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ companyName, email, phone, password })
+      });
+
+      if (response.ok) {
+        successMessage.style.display = 'block';
+      } else {
+        throw new Error('Ошибка регистрации');
+      }
+    } catch (error) {
+      errorMessage.textContent = error.message;
+      errorMessage.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

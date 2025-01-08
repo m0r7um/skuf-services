@@ -24,7 +24,6 @@
             left: 0;
             width: 100%;
             background-color: #ffffff;
-            color: white;
             display: flex;
             align-items: center;
             padding: 10px 20px;
@@ -86,20 +85,40 @@
             box-sizing: border-box;
         }
 
+        .button,
+        .link-button {
+            display: block;
+            width: 100%; /* Полная ширина */
+            max-width: 360px; /* Максимальная ширина */
+            margin: 10px auto; /* Центровка */
+            padding: 12px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: 'Rubik', Arial, sans-serif;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
         .button {
             background-color: #005baa;
             color: white;
             border: none;
-            border-radius: 4px;
-            padding: 12px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            font-family: 'Rubik', Arial, sans-serif; /* Применение шрифта для кнопки */
         }
 
         .button:hover {
             background-color: #003f7d;
+        }
+
+        .link-button {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .link-button:hover {
+            background-color: #e0e0e0;
         }
 
         .error-message {
@@ -116,6 +135,9 @@
             display: none;
         }
     </style>
+
+
+
 </head>
 <body>
 <div class="header">
@@ -137,6 +159,8 @@
         <div class="error-message" id="error-message">Неверный логин или пароль</div>
         <div class="success-message" id="success-message">Авторизация успешна!</div>
     </form>
+    <a href="/user/signup" class="link-button">Зарегистрироваться</a>
+    <a href="/provider/signup" class="link-button">Стать поставщиком услуг</a>
 </div>
 <script>
     document.getElementById('auth-form').addEventListener('submit', async (e) => {

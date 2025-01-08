@@ -13,7 +13,13 @@ import org.springframework.web.servlet.function.ServerResponse
 class RouterConfig{
     @Bean
     fun spaRouter(): RouterFunction<ServerResponse> {
-        val index = ClassPathResource("static/login.html")
-        return route().resource(path("/login"), index).build()
+        val login = ClassPathResource("static/login.html")
+        val registerUser = ClassPathResource("static/register-user.html")
+        val registerProvider = ClassPathResource("static/register-provider.html")
+        return route()
+            .resource(path("/login"), login)
+            .resource(path("user/signup"), registerUser)
+            .resource(path("provider/signup"), registerProvider)
+            .build()
     }
 }
