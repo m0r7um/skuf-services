@@ -1,4 +1,4 @@
-package mortum.skufservices.persistence.dto
+package mortum.skufservices.dto
 
 import jakarta.validation.constraints.NotBlank
 import mortum.skufservices.persistence.model.user.Role

@@ -12,6 +12,8 @@ class ServiceController(
 
     @GetMapping("/service/all")
     fun getAll(): MutableList<ServiceModel> {
-        return serviceModelService.getAll();
+        val e = serviceModelService.getAll()
+        val ee = 4
+        return e
     }
 }

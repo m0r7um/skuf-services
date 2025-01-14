@@ -1,6 +1,6 @@
 package mortum.skufservices.service
 
-import mortum.skufservices.persistence.dto.RoleDto
+import mortum.skufservices.dto.RoleDto
 import mortum.skufservices.persistence.model.user.RoleEnum
 import mortum.skufservices.persistence.repository.user.RoleRepository
 import org.springframework.stereotype.Service

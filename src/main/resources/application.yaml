@@ -12,7 +12,8 @@ spring:
           lob:
             non_contextual_creation: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+    show-sql: true
 server:
   error:
     whitelabel:

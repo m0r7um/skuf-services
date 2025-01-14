@@ -1,4 +1,4 @@
-package mortum.skufservices.persistence.dto
+package mortum.skufservices.dto
 
 import mortum.skufservices.persistence.model.user.RoleEnum
 import java.util.UUID

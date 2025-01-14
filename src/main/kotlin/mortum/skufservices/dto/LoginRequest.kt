@@ -1,4 +1,4 @@
-package mortum.skufservices.persistence.dto
+package mortum.skufservices.dto
 
 data class LoginRequest(
     val username: String,

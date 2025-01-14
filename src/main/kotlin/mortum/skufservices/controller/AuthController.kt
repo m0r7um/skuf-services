@@ -4,10 +4,10 @@ import jakarta.validation.Valid
 import mortum.skufservices.service.UserDetailsImpl
 import mortum.skufservices.service.UserService
 import mortum.skufservices.utils.JwtUtils
-import mortum.skufservices.persistence.dto.LoginRequest
-import mortum.skufservices.persistence.dto.LoginResponse
-import mortum.skufservices.persistence.dto.SignUpRequest
-import mortum.skufservices.persistence.dto.SignUpResponse
+import mortum.skufservices.dto.LoginRequest
+import mortum.skufservices.dto.LoginResponse
+import mortum.skufservices.dto.SignUpRequest
+import mortum.skufservices.dto.SignUpResponse
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority

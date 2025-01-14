@@ -1,12 +1,12 @@
 package mortum.skufservices.service
 
 import mortum.skufservices.UsernameAlreadyExistsException
-import mortum.skufservices.persistence.dto.RoleDto
+import mortum.skufservices.dto.RoleDto
 import mortum.skufservices.persistence.model.user.RoleEnum
 import mortum.skufservices.persistence.model.user.User
 import mortum.skufservices.persistence.repository.user.UserRepository
-import mortum.skufservices.persistence.dto.SignUpRequest
-import mortum.skufservices.persistence.dto.UserDto
+import mortum.skufservices.dto.SignUpRequest
+import mortum.skufservices.dto.UserDto
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
