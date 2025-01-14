@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 @Table(name = "service")
-class Service(
+class ServiceModel(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID,

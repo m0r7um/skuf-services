@@ -2,7 +2,7 @@ package mortum.skufservices.persistence.model.user
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
-import mortum.skufservices.persistence.model.service.Service
+import mortum.skufservices.persistence.model.service.ServiceModel
 import java.util.*
 
 @Entity
@@ -22,5 +22,5 @@ class User(val login: @NotBlank String, val password: @NotBlank String) {
 
     @OneToMany
     @JoinColumn(name = "user_id")
-    val services: MutableSet<Service> = mutableSetOf()
+    val services: MutableSet<ServiceModel> = mutableSetOf()
 }

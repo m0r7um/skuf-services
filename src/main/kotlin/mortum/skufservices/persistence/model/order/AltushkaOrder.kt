@@ -1,14 +1,14 @@
 package mortum.skufservices.persistence.model.order
 
 import jakarta.persistence.Entity
-import mortum.skufservices.persistence.model.service.Service
+import mortum.skufservices.persistence.model.service.ServiceModel
 
 @Entity
 class AltushkaOrder(
     comment: String,
     rating: Byte,
     status: OrderStatus,
-    service: Service,
+    service: ServiceModel,
 ) : Order(
     comment = comment,
     rating = rating,

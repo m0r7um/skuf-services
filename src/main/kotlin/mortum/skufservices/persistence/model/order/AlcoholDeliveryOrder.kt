@@ -3,7 +3,7 @@ package mortum.skufservices.persistence.model.order
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
-import mortum.skufservices.persistence.model.service.Service
+import mortum.skufservices.persistence.model.service.ServiceModel
 
 @Entity
 class AlcoholDeliveryOrder(
@@ -14,7 +14,7 @@ class AlcoholDeliveryOrder(
     comment: String,
     rating: Byte,
     status: OrderStatus,
-    service: Service,
+    service: ServiceModel,
 ) : Order(
     comment = comment,
     rating = rating,

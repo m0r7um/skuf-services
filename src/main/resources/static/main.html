@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СкуфУслуги</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Rubik', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .header h1 .blue {
+            color: #0074d9;
+        }
+
+        .header h1 .red {
+            color: #ff0000;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 700px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #0074d9;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .search-bar button:hover {
+            background-color: #005baa;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown .dropdown-toggle {
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown .dropdown-toggle:hover {
+            background-color: #eaeaea;
+        }
+
+        .dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            z-index: 1000;
+            width: 200px;
+            padding: 10px;
+        }
+
+        .dropdown .dropdown-menu label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .dropdown .dropdown-menu input[type="checkbox"] {
+            transform: scale(0.9);
+            margin: 0;
+        }
+
+        .dropdown.open .dropdown-menu {
+            display: block;
+        }
+
+        .cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+            color: #0074d9;
+        }
+
+        .card p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .card .price {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+        .card .author {
+            margin-top: 5px;
+            color: #333;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .card .category-date {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .card .category {
+            color: #555;
+        }
+
+        .card .date {
+            color: #888;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .pagination button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #0074d9;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background-color: #005baa;
+        }
+
+        .pagination button:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .dropdown-menu {
+            gap: 5px;
+        }
+
+        .dropdown-menu > label {
+            width: 48px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <img src="logo.png" alt="Логотип">
+    <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
+</div>
+
+<div class="search-bar">
+    <input type="text" placeholder="Поиск по названиям">
+    <div class="dropdown">
+        <div class="dropdown-toggle">Категории</div>
+        <div class="dropdown-menu">
+            <label><input type="checkbox" value="1"> Категория1</label>
+            <label><input type="checkbox" value="2"> Категория2</label>
+            <label><input type="checkbox" value="3"> Категория3</label>
+            <label><input type="checkbox" value="4"> Категория4</label>
+            <label><input type="checkbox" value="5"> Категория5</label>
+        </div>
+    </div>
+    <button>Искать</button>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <h3>Заголовок услуги 1</h3>
+        <p class="price">1000 ₽</p>
+        <p>Описание услуги 1</p>
+        <p class="author">Автор: Иван Иванов</p>
+        <div class="category-date">
+            <p class="date">01.01.2025</p>
+            <p class="category">Категория 1</p>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Заголовок услуги 2</h3>
+        <p class="price">2000 ₽</p>
+        <p>Описание услуги 2</p>
+        <p class="author">Автор: Петр Петров</p>
+        <div class="category-date">
+            <p class="date">02.01.2025</p>
+            <p class="category">Категория 2</p>
+        </div>
+    </div>
+    <!-- Добавьте больше карточек при необходимости -->
+</div>
+
+<div class="pagination">
+    <button>1</button>
+    <button>...</button>
+    <button>2</button>
+    <button>3</button>
+    <button disabled>4</button>
+    <button>5</button>
+    <button>...</button>
+    <button>10</button>
+</div>
+
+<script>
+    document.querySelector('.dropdown-toggle').addEventListener('click', function() {
+        this.parentElement.classList.toggle('open');
+    });
+
+    window.addEventListener('click', function(e) {
+        const dropdown = document.querySelector('.dropdown');
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+        }
+    });
+</script>
+</body>
+</html>

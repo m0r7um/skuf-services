@@ -3,7 +3,7 @@ package mortum.skufservices.persistence.model.order
 import jakarta.persistence.*
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
-import mortum.skufservices.persistence.model.service.Service
+import mortum.skufservices.persistence.model.service.ServiceModel
 import java.util.UUID
 
 @Entity
@@ -25,5 +25,5 @@ data class Order(
     val status: OrderStatus,
 
     @ManyToOne
-    val service: Service,
+    val service: ServiceModel,
 )
