@@ -72,14 +72,14 @@ VALUES
 create table service
 (
     id          varchar(255) primary key,
-    name        varchar(150)               not null,
+    title       varchar(150)               not null,
     price       decimal                    not null,
     user_id     uuid REFERENCES users (id) not null,
     description text                       not null,
     type        varchar(20)                not null
 );
 
-INSERT INTO service(id, name, price, user_id, description, type)
+INSERT INTO service(id, title, price, user_id, description, type)
 VALUES ('327dfbc0-d0be-4f23-bdfb-c0d0be3f237f', 'Объявление 1', 1000.23, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'description', 'WOT'),
        ('53d5aebe-ebea-4da8-95ae-beebea4da887', 'Доставка бульменей', 1222.23, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'description2', 'ALCOHOL'),
        ('e406c625-64ee-4b06-86c6-2564eefb06c2', 'Только массаж!', 4322.23, 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'description3', 'LAUNDRY'),
