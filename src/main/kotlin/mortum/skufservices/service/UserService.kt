@@ -24,7 +24,10 @@ class UserService(
 
         val userDto = UserDto(
             signupRequest.username,
-            passwordEncoder.encode(signupRequest.password)
+            passwordEncoder.encode(signupRequest.password),
+            name = signupRequest.name,
+            surname = signupRequest.surname,
+            birthDate = signupRequest.birthDate,
         )
         val strRoles: Set<String> = signupRequest.role
         val roles: MutableSet<RoleDto> = HashSet()

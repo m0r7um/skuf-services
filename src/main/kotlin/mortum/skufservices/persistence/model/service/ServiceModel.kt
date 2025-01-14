@@ -3,6 +3,7 @@ package mortum.skufservices.persistence.model.service
 import jakarta.persistence.*
 import mortum.skufservices.persistence.model.order.Order
 import mortum.skufservices.persistence.model.user.User
+import java.math.BigDecimal
 import java.util.*
 
 @Entity
@@ -11,6 +12,8 @@ class ServiceModel(
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID,
+
+    val name: String,
 
     val description: String,
 
@@ -23,4 +26,6 @@ class ServiceModel(
 
     @ManyToOne
     val user: User,
+
+    val price: BigDecimal,
 )

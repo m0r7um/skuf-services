@@ -5,4 +5,5 @@ enum class ServiceType {
     ALCOHOL,
     ALTUSHKA,
     WOT,
+    LAUNDRY,
 }
