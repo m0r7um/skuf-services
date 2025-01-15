@@ -15,7 +15,7 @@ drop type if exists request_status_type cascade;
 
 create table users
 (
-    id         uuid not null primary key,
+    id         varchar(36) not null primary key,
     login      varchar(255) unique,
     password   varchar(255),
     birth_date timestamp without time zone CHECK (birth_date <= CURRENT_DATE AND birth_date >= CURRENT_DATE - INTERVAL '100 years'),
@@ -39,7 +39,7 @@ CREATE TYPE role_type AS ENUM (
 
 create table role
 (
-    id   uuid primary key,
+    id   varchar(36) primary key,
     name role_type not null
 );
 
@@ -51,8 +51,8 @@ VALUES
 
 create table user_roles
 (
-    role_id uuid not null references role on delete cascade,
-    user_id uuid not null references users on delete cascade,
+    role_id varchar(36) not null references role on delete cascade,
+    user_id varchar(36) not null references users on delete cascade,
     primary key (role_id, user_id)
 );
 
@@ -72,7 +72,7 @@ CREATE TYPE request_status_type AS ENUM (
 
 create table request
 (
-    id     uuid primary key,
+    id     varchar(36) primary key,
     status request_status_type not null
 );
 
@@ -98,7 +98,7 @@ create table service
     id          varchar(36) primary key,
     title       varchar(150)                 not null,
     price       decimal check ( price >= 0 ) not null,
-    user_id     uuid REFERENCES users (id) on delete cascade   not null ,
+    user_id     varchar(36) REFERENCES users (id) on delete cascade   not null ,
     description text                         not null,
     type        service_type                 not null
 );
@@ -125,7 +125,7 @@ VALUES ('7e869892-142a-45d9-8698-92142ab5d9c1', 'martini', 'description', 1000.2
 
 create table dumplings
 (
-    id          uuid primary key,
+    id          varchar(36) primary key,
     name        varchar(50)                  not null,
     description text                         not null,
     price       decimal CHECK ( price >= 0 ) not null
@@ -148,12 +148,12 @@ create type order_status as enum(
 
 create table orders
 (
-    id          uuid primary key,
+    id          varchar(36) primary key,
     total_price decimal CHECK ( total_price >= 0 )   not null,
     comment     text,
     status      order_status                         not null,
-    service_id  varchar(255) REFERENCES service (id) on delete cascade not null,
-    user_id     uuid REFERENCES users (id)  on delete cascade          not null,
+    service_id  varchar(36) REFERENCES service (id) on delete cascade not null,
+    user_id     varchar(36) REFERENCES users (id)  on delete cascade          not null,
     address     text                                 not null,
     rating      integer CHECK (rating >= 0 AND rating <= 5)
 );
@@ -166,9 +166,9 @@ VALUES ('3aa6762c-1b94-48e9-a676-2c1b9448e9af', 12232.321, null, 'CANCELLED', 'a
 
 create table content_of_order_of_alcohol
 (
-    id         uuid primary key,
-    order_id   uuid REFERENCES orders (id) on delete cascade        not null,
-    alcohol_id uuid REFERENCES alcohol_drink (id) on delete cascade not null,
+    id         varchar(36) primary key,
+    order_id   varchar(36) REFERENCES orders (id) on delete cascade        not null,
+    alcohol_id varchar(36) REFERENCES alcohol_drink (id) on delete cascade not null,
     count      integer CHECK (count > 0)         not null
 );
 
@@ -181,9 +181,9 @@ INSERT INTO content_of_order_of_alcohol(id, order_id, alcohol_id, count) VALUES
 
 create table content_of_order_of_dumplings
 (
-    id          uuid primary key,
-    order_id    uuid REFERENCES orders (id) on delete cascade   not null,
-    dumpling_id uuid REFERENCES dumplings (id) on delete cascade not null,
+    id          varchar(36) primary key,
+    order_id    varchar(36) REFERENCES orders (id) on delete cascade   not null,
+    dumpling_id varchar(36) REFERENCES dumplings (id) on delete cascade not null,
     count       integer CHECK (count > 0)     not null
 );
 
