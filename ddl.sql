@@ -8,6 +8,8 @@ drop table if exists request cascade;
 drop table if exists user_roles cascade;
 drop table if exists role cascade;
 drop table if exists users cascade;
+drop type if exists service_type cascade;
+drop type if exists order_status cascade;
 
 create table users
 (
@@ -69,6 +71,14 @@ VALUES
     ('44444444-dddd-dddd-dddd-dddddddddddd', 'APPROVED'),
     ('55555555-eeee-eeee-eeee-eeeeeeeeeeee', 'AWAITING_APPROVEMENT');
 
+CREATE TYPE service_type AS ENUM(
+    'DUMPLINGS',
+    'ALCOHOL',
+    'ALTUSHKA',
+    'WOT',
+    'LAUNDRY'
+);
+
 create table service
 (
     id          varchar(255) primary key,
@@ -76,7 +86,7 @@ create table service
     price       decimal                    not null,
     user_id     uuid REFERENCES users (id) not null,
     description text                       not null,
-    type        varchar(20)                not null
+    type        service_type               not null
 );
 
 INSERT INTO service(id, title, price, user_id, description, type)
@@ -114,12 +124,20 @@ VALUES ('f566ada3-ae66-4fce-a6ad-a3ae660fce32', 'Xiao long bao', 'description', 
        ('f80693e2-ba52-471d-8693-e2ba52771dba', 'Wonton', 'description4', 223),
        ('a9fb92a5-73f7-4a29-bb92-a573f79a29ab', 'Mandu', 'description5', 223);
 
+create type order_status as enum(
+    'CANCELLED',
+    'PAYMENT_AWAITING',
+    'AWAITING_CONFIRMATION',
+    'IN_PROGRESS',
+    'COMPLETED'
+);
+
 create table orders
 (
     id          uuid primary key,
     total_price decimal                              not null,
     comment     text,
-    status      varchar(20)                          not null,
+    status      order_status                         not null,
     service_id  varchar(255) REFERENCES service (id) not null,
     user_id     uuid REFERENCES users (id)           not null,
     address     text                                 not null,
@@ -127,7 +145,7 @@ create table orders
 );
 
 INSERT INTO orders(id, total_price, comment, status, service_id, user_id, address, rating)
-VALUES ('3aa6762c-1b94-48e9-a676-2c1b9448e9af', 12232.321, null, 'CANCELED', 'ae7ad77d-096f-4fc8-bad7-7d096f3fc86a', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Смирнова 1', 3),
+VALUES ('3aa6762c-1b94-48e9-a676-2c1b9448e9af', 12232.321, null, 'CANCELLED', 'ae7ad77d-096f-4fc8-bad7-7d096f3fc86a', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Смирнова 1', 3),
        ('e6971157-861c-470b-9711-57861c370b3c', 45456, 'qweewrhrth', 'PAYMENT_AWAITING', 'e406c625-64ee-4b06-86c6-2564eefb06c2', 'dddddddd-dddd-dddd-dddd-dddddddddddd',  'Суворова 19', 5),
        ('39d37332-de50-40b9-9373-32de5080b981', 43, 'gbrtnertertbsdfvsdfbrfb', 'COMPLETED', 'e406c625-64ee-4b06-86c6-2564eefb06c2', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Ленина 33', 1),
        ('7ce1793a-63a3-4913-a179-3a63a32913e2', 6534, null, 'IN_PROGRESS', '53d5aebe-ebea-4da8-95ae-beebea4da887', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Карамазовы 55', 4);
@@ -192,31 +210,24 @@ $$ LANGUAGE plpgsql;
 
 
 
--- Функция для проверки статуса заказа перед выставлением рейтинга
 CREATE OR REPLACE FUNCTION check_order_status_for_rating()
     RETURNS TRIGGER AS $$
-DECLARE
-order_status VARCHAR(20);
 BEGIN
-    -- Получение текущего статуса заказа
-SELECT status INTO order_status
-FROM request
-WHERE id = NEW.order_id;
+    -- Если статус заказа не "CANCELLED" и не "COMPLETED", выбрасываем исключение
+    IF NEW.rating IS NOT NULL AND NEW.status NOT IN ('CANCELLED', 'COMPLETED') THEN
+        RAISE EXCEPTION 'Cannot set rating for orders that are not CANCELLED or COMPLETED';
+    END IF;
 
--- Проверка, что статус заказа "COMPLETED" или "CANCELED"
-IF order_status NOT IN ('COMPLETED', 'CANCELED') THEN
-        RAISE EXCEPTION 'Rating can only be added to orders with status COMPLETED or CANCELED. Current status: %', order_status;
-END IF;
-
-RETURN NEW;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Создание триггера на таблицу orders
-CREATE TRIGGER before_rating_insert
-    BEFORE INSERT OR UPDATE ON orders
-                         FOR EACH ROW
-                         EXECUTE FUNCTION check_order_status_for_rating();
+CREATE TRIGGER trigger_check_order_status_for_rating
+    BEFORE UPDATE ON orders
+    FOR EACH ROW
+    WHEN (NEW.rating IS DISTINCT FROM OLD.rating) -- Ограничиваем вызов только изменением поля rating
+EXECUTE FUNCTION check_order_status_for_rating();
+
 
 
 

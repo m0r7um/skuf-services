@@ -3,6 +3,8 @@ package mortum.skufservices.persistence.model.service
 import jakarta.persistence.*
 import mortum.skufservices.persistence.model.order.Order
 import mortum.skufservices.persistence.model.user.User
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import java.math.BigDecimal
 
 @Entity
@@ -17,6 +19,7 @@ class ServiceModel(
     val description: String,
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     val type: ServiceType,
 
     @OneToMany
