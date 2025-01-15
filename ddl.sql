@@ -81,7 +81,7 @@ CREATE TYPE service_type AS ENUM(
 
 create table service
 (
-    id          varchar(255) primary key,
+    id          varchar(36) primary key,
     title       varchar(150)               not null,
     price       decimal                    not null,
     user_id     uuid REFERENCES users (id) not null,
@@ -97,7 +97,7 @@ VALUES ('327dfbc0-d0be-4f23-bdfb-c0d0be3f237f', 'Объявление 1', 1000.2
 
 create table alcohol_drink
 (
-    id          uuid primary key,
+    id          varchar(36) primary key,
     name        varchar(50) not null,
     description text        not null,
     price       decimal     not null
