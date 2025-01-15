@@ -163,58 +163,6 @@ INSERT INTO content_of_order_of_dumplings(id, order_id, dumpling_id, count) VALU
 
 
 
-
-
--- Триггер для обеспечения целостности при вставке в таблицу content_of_order_of_alcohol
-CREATE OR REPLACE FUNCTION check_alcohol_order_integrity()
-    RETURNS TRIGGER AS $$
-BEGIN
-    -- Проверка: существует ли указанный заказ
-    IF NOT EXISTS (SELECT 1 FROM orders WHERE id = NEW.order_id) THEN
-        RAISE EXCEPTION 'Order ID % does not exist', NEW.order_id;
-END IF;
-
-    -- Проверка: существует ли указанный алкогольный напиток
-    IF NOT EXISTS (SELECT 1 FROM alcohol_drink WHERE id = NEW.alcohol_id) THEN
-        RAISE EXCEPTION 'Alcohol ID % does not exist', NEW.alcohol_id;
-END IF;
-
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_check_alcohol_order
-    BEFORE INSERT ON content_of_order_of_alcohol
-    FOR EACH ROW
-    EXECUTE FUNCTION check_alcohol_order_integrity();
-
-
-
--- Триггер для обеспечения целостности при вставке в таблицу content_of_order_of_dumplings
-CREATE OR REPLACE FUNCTION check_dumplings_order_integrity()
-    RETURNS TRIGGER AS $$
-BEGIN
-    -- Проверка: существует ли указанный заказ
-    IF NOT EXISTS (SELECT 1 FROM orders WHERE id = NEW.order_id) THEN
-        RAISE EXCEPTION 'Order ID % does not exist', NEW.order_id;
-END IF;
-
-    -- Проверка: существует ли указанное пельмени
-    IF NOT EXISTS (SELECT 1 FROM dumplings WHERE id = NEW.dumpling_id) THEN
-        RAISE EXCEPTION 'Dumpling ID % does not exist', NEW.dumpling_id;
-END IF;
-
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_check_dumplings_order
-    BEFORE INSERT ON content_of_order_of_dumplings
-    FOR EACH ROW
-    EXECUTE FUNCTION check_dumplings_order_integrity();
-
-
-
 -- Функция для массового добавления алкоголя в заказ
 CREATE OR REPLACE FUNCTION add_alcohol_to_order(p_order_id UUID, p_alcohol_ids UUID[], p_counts INT[])
     RETURNS VOID AS $$
@@ -290,3 +238,43 @@ CREATE TRIGGER before_order_time_check
     BEFORE INSERT OR UPDATE ON orders
                          FOR EACH ROW
                          EXECUTE FUNCTION check_order_time();
+
+-- Создаем функцию, которая будет выполнять проверку
+CREATE OR REPLACE FUNCTION check_alcohol_order()
+    RETURNS TRIGGER AS $$
+BEGIN
+    -- Проверяем возраст пользователя
+    IF NEW.service_id IN (
+        SELECT id FROM service WHERE type = 'ALCOHOL'
+    ) THEN
+        -- Получаем дату рождения пользователя
+        DECLARE user_birth_date TIMESTAMP;
+        BEGIN
+            SELECT birth_date INTO user_birth_date FROM users WHERE id = NEW.user_id;
+
+            IF user_birth_date IS NULL THEN
+                RAISE EXCEPTION 'User not found';
+            END IF;
+
+            -- Проверяем возраст пользователя
+            IF EXTRACT(YEAR FROM AGE(NOW(), user_birth_date)) < 18 THEN
+                RAISE EXCEPTION 'User must be at least 18 years old to order alcohol';
+            END IF;
+
+            -- Проверяем время
+            IF (EXTRACT(HOUR FROM NOW()) >= 22) THEN
+                RAISE EXCEPTION 'Alcohol orders are not allowed after 10 PM';
+            END IF;
+        END;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Создаем триггер, который вызывает функцию перед вставкой записи в таблицу orders
+CREATE TRIGGER trigger_check_alcohol_order
+    BEFORE INSERT ON orders
+    FOR EACH ROW
+EXECUTE FUNCTION check_alcohol_order();
+
