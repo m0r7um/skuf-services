@@ -10,14 +10,16 @@ drop table if exists role cascade;
 drop table if exists users cascade;
 drop type if exists service_type cascade;
 drop type if exists order_status cascade;
+drop type if exists role_type cascade;
+drop type if exists request_status_type cascade;
 
 create table users
 (
     id         uuid not null primary key,
     login      varchar(255) unique,
     password   varchar(255),
-    birth_date timestamp without time zone,
-    name       varchar(255),
+    birth_date timestamp without time zone CHECK (birth_date <= CURRENT_DATE AND birth_date >= CURRENT_DATE - INTERVAL '100 years'),
+    name       varchar(20),
     surname    varchar(255)
 );
 
@@ -29,12 +31,17 @@ VALUES
     ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'user2', 'password4', '1995-07-20 00:00:00+00', 'Bob', 'Brown'),
     ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'admin2', 'password5', '1980-12-12 00:00:00+00', 'Charlie', 'Davis');
 
+CREATE TYPE role_type AS ENUM (
+    'ROLE_USER',
+    'ROLE_ADMIN',
+    'ROLE_PROVIDER'
+);
+
 create table role
 (
-    id   uuid not null
-        primary key,
-    name varchar(20) check ((name)::text = ANY ((ARRAY ['ROLE_USER'::character varying, 'ROLE_ADMIN'::character varying, 'ROLE_PROVIDER'::character varying])::text[]))
-    );
+    id   uuid primary key,
+    name role_type not null
+);
 
 INSERT INTO role (id, name)
 VALUES
@@ -44,8 +51,8 @@ VALUES
 
 create table user_roles
 (
-    role_id uuid not null references role,
-    user_id uuid not null references users,
+    role_id uuid not null references role on delete cascade,
+    user_id uuid not null references users on delete cascade,
     primary key (role_id, user_id)
 );
 
@@ -57,11 +64,17 @@ VALUES
     ('11111111-1111-1111-1111-111111111111', 'dddddddd-dddd-dddd-dddd-dddddddddddd'),
     ('22222222-2222-2222-2222-222222222222', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee');
 
+CREATE TYPE request_status_type AS ENUM (
+    'AWAITING_APPROVEMENT',
+    'APPROVED',
+    'DECLINED'
+);
+
 create table request
 (
-    id   uuid not null primary key,
-    status varchar(20) check ((status)::text = ANY ((ARRAY ['AWAITING_APPROVEMENT'::character varying, 'APPROVED'::character varying, 'DECLINED'::character varying])::text[]))
-    );
+    id     uuid primary key,
+    status request_status_type not null
+);
 
 INSERT INTO request (id, status)
 VALUES
@@ -70,6 +83,7 @@ VALUES
     ('33333333-cccc-cccc-cccc-cccccccccccc', 'DECLINED'),
     ('44444444-dddd-dddd-dddd-dddddddddddd', 'APPROVED'),
     ('55555555-eeee-eeee-eeee-eeeeeeeeeeee', 'AWAITING_APPROVEMENT');
+
 
 CREATE TYPE service_type AS ENUM(
     'DUMPLINGS',
@@ -82,11 +96,11 @@ CREATE TYPE service_type AS ENUM(
 create table service
 (
     id          varchar(36) primary key,
-    title       varchar(150)               not null,
-    price       decimal                    not null,
-    user_id     uuid REFERENCES users (id) not null,
-    description text                       not null,
-    type        service_type               not null
+    title       varchar(150)                 not null,
+    price       decimal check ( price >= 0 ) not null,
+    user_id     uuid REFERENCES users (id) on delete cascade   not null ,
+    description text                         not null,
+    type        service_type                 not null
 );
 
 INSERT INTO service(id, title, price, user_id, description, type)
@@ -98,9 +112,9 @@ VALUES ('327dfbc0-d0be-4f23-bdfb-c0d0be3f237f', 'Объявление 1', 1000.2
 create table alcohol_drink
 (
     id          varchar(36) primary key,
-    name        varchar(50) not null,
-    description text        not null,
-    price       decimal     not null
+    name        varchar(50)                  not null,
+    description text                         not null,
+    price       decimal check ( price >= 0 ) not null
 );
 
 INSERT INTO alcohol_drink(id, name, description, price)
@@ -112,9 +126,9 @@ VALUES ('7e869892-142a-45d9-8698-92142ab5d9c1', 'martini', 'description', 1000.2
 create table dumplings
 (
     id          uuid primary key,
-    name        varchar(50) not null,
-    description text        not null,
-    price       decimal     not null
+    name        varchar(50)                  not null,
+    description text                         not null,
+    price       decimal CHECK ( price >= 0 ) not null
 );
 
 INSERT INTO dumplings(id, name, description, price)
@@ -135,11 +149,11 @@ create type order_status as enum(
 create table orders
 (
     id          uuid primary key,
-    total_price decimal                              not null,
+    total_price decimal CHECK ( total_price >= 0 )   not null,
     comment     text,
     status      order_status                         not null,
-    service_id  varchar(255) REFERENCES service (id) not null,
-    user_id     uuid REFERENCES users (id)           not null,
+    service_id  varchar(255) REFERENCES service (id) on delete cascade not null,
+    user_id     uuid REFERENCES users (id)  on delete cascade          not null,
     address     text                                 not null,
     rating      integer CHECK (rating >= 0 AND rating <= 5)
 );
@@ -153,9 +167,9 @@ VALUES ('3aa6762c-1b94-48e9-a676-2c1b9448e9af', 12232.321, null, 'CANCELLED', 'a
 create table content_of_order_of_alcohol
 (
     id         uuid primary key,
-    order_id   uuid REFERENCES orders (id)        not null,
-    alcohol_id uuid REFERENCES alcohol_drink (id) not null,
-    count      integer                            not null
+    order_id   uuid REFERENCES orders (id) on delete cascade        not null,
+    alcohol_id uuid REFERENCES alcohol_drink (id) on delete cascade not null,
+    count      integer CHECK (count > 0)         not null
 );
 
 INSERT INTO content_of_order_of_alcohol(id, order_id, alcohol_id, count) VALUES
@@ -168,9 +182,9 @@ INSERT INTO content_of_order_of_alcohol(id, order_id, alcohol_id, count) VALUES
 create table content_of_order_of_dumplings
 (
     id          uuid primary key,
-    order_id    uuid REFERENCES orders (id)    not null,
-    dumpling_id uuid REFERENCES dumplings (id) not null,
-    count       integer                        not null
+    order_id    uuid REFERENCES orders (id) on delete cascade   not null,
+    dumpling_id uuid REFERENCES dumplings (id) on delete cascade not null,
+    count       integer CHECK (count > 0)     not null
 );
 
 INSERT INTO content_of_order_of_dumplings(id, order_id, dumpling_id, count) VALUES
