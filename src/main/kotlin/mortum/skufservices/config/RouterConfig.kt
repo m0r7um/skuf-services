@@ -16,10 +16,12 @@ class RouterConfig{
         val login = ClassPathResource("static/login.html")
         val registerUser = ClassPathResource("static/register-user.html")
         val registerProvider = ClassPathResource("static/register-provider.html")
+        val mainProvider = ClassPathResource("static/main.html")
         return route()
             .resource(path("/login"), login)
-            .resource(path("user/signup"), registerUser)
-            .resource(path("provider/signup"), registerProvider)
+            .resource(path("/user/signup"), registerUser)
+            .resource(path("/provider/signup"), registerProvider)
+            .resource(path("/main"), mainProvider)
             .build()
     }
 }
