@@ -1,6 +1,7 @@
 package mortum.skufservices.persistence.model.order
 
 import jakarta.persistence.*
+import java.math.BigDecimal
 import java.util.*
 
 @Entity
@@ -17,5 +18,5 @@ class Dumplings(
 
     val description: String,
 
-    val price: Double,
+    val price: BigDecimal,
 )

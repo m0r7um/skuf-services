@@ -25,9 +25,11 @@ create table users
 
 INSERT INTO users (id, login, password, birth_date, name, surname)
 VALUES
-    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'user1', 'password1', '1990-01-01 00:00:00+00', 'John', 'Doe'),
+    -- user1, password1 --
+    ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'user1', '$2a$10$HZBB/HY.la38JLiwXe7iB.S4CM14lpnz8UVEPtx9YzBfRLfzQEMb.', '1990-01-01 00:00:00+00', 'John', 'Doe'),
     ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'admin1', 'password2', '1985-05-15 00:00:00+00', 'Jane', 'Smith'),
-    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'provider1', 'password3', '1992-10-30 00:00:00+00', 'Alice', 'Johnson'),
+    -- provider1, password3 --
+    ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'provider1', '$2a$10$Tkf3Ceh0ban.CTKCbe6d0OiJJSEhSuXbViot5.Pdd1bonbeO1A1by', '1992-10-30 00:00:00+00', 'Alice', 'Johnson'),
     ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'user2', 'password4', '1995-07-20 00:00:00+00', 'Bob', 'Brown'),
     ('eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'admin2', 'password5', '1980-12-12 00:00:00+00', 'Charlie', 'Davis');
 

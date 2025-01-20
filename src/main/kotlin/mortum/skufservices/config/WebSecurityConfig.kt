@@ -11,7 +11,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
 import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -57,7 +56,8 @@ class WebSecurityConfig(
     @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
+        http.csrf { it.disable() }
+            .cors{ it.disable() }
             .exceptionHandling { exception: ExceptionHandlingConfigurer<HttpSecurity?> ->
                 exception.authenticationEntryPoint(
                     unauthorizedHandler
@@ -69,7 +69,11 @@ class WebSecurityConfig(
                 )
             }
             .authorizeHttpRequests { auth ->
+                auth.requestMatchers("/login").permitAll()
                 auth.requestMatchers("/auth/**").permitAll()
+                auth.requestMatchers("/user/signup").permitAll()
+                auth.requestMatchers("/provider/signup").permitAll()
+                auth.requestMatchers("/main").hasRole("USER")
                     .anyRequest().permitAll()
             }
 

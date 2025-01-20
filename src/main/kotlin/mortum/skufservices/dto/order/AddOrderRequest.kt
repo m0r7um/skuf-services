@@ -16,18 +16,48 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
         value = AddOrderRequest.AddAlcoholDeliveryOrderRequest::class,
         name = "ALCOHOL",
     ),
+    JsonSubTypes.Type(
+        value = AddOrderRequest.AddDumplingsDeliveryOrderRequest::class,
+        name = "DUMPLINGS",
+    ),
+    JsonSubTypes.Type(
+        value = AddOrderRequest.AddAltushkaDeliveryOrderRequest::class,
+        name = "ALTUSHKA",
+    ),
+    JsonSubTypes.Type(
+        value = AddOrderRequest.AddWotOrderRequest::class,
+        name = "WOT",
+    ),
 )
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 sealed class AddOrderRequest {
     abstract val type: String
+    abstract val serviceId: String
 
     data class AddAlcoholDeliveryOrderRequest(
         override val type: String = "ALCOHOL",
-        val serviceId: String,
+        override val serviceId: String,
+        val content: Map<String, Int>,
+    ) : AddOrderRequest()
+
+    data class AddDumplingsDeliveryOrderRequest(
+        override val type: String = "DUMPLINGS",
+        override val serviceId: String,
         val content: Map<String, Int>,
     ) : AddOrderRequest()
 
     data class AddAltushkaDeliveryOrderRequest(
         override val type: String = "ALTUSHKA",
+        override val serviceId: String,
+    ) : AddOrderRequest()
+
+    data class AddWotOrderRequest(
+        override val type: String = "WOT",
+        override val serviceId: String,
+    ) : AddOrderRequest()
+
+    data class AddLaundryRequest(
+        override val type: String = "LAUNDRY",
+        override val serviceId: String,
     ) : AddOrderRequest()
 }

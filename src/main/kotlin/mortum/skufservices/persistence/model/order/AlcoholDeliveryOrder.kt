@@ -11,7 +11,7 @@ import java.math.BigDecimal
 @Entity
 @DiscriminatorValue(value = "ALCOHOL")
 class AlcoholDeliveryOrder(
-    val totalPrice: BigDecimal,
+    totalPrice: BigDecimal,
     @OneToMany
     @JoinColumn(name = "order_id")
     var content: MutableList<AlcoholDeliveryOrderContent>?,
@@ -26,4 +26,5 @@ class AlcoholDeliveryOrder(
     status = status,
     service = service,
     user = user,
+    totalPrice = totalPrice,
 )

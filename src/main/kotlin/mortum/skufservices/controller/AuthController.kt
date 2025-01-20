@@ -1,13 +1,12 @@
 package mortum.skufservices.controller
 
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
+import mortum.skufservices.dto.*
 import mortum.skufservices.service.UserDetailsImpl
 import mortum.skufservices.service.UserService
 import mortum.skufservices.utils.JwtUtils
-import mortum.skufservices.dto.LoginRequest
-import mortum.skufservices.dto.LoginResponse
-import mortum.skufservices.dto.SignUpRequest
-import mortum.skufservices.dto.SignUpResponse
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
@@ -27,7 +26,7 @@ class AuthController(
 ) {
 
     @PostMapping("/signin")
-    fun authenticateUser(@RequestBody loginRequest: LoginRequest): LoginResponse {
+    fun authenticateUser(@RequestBody loginRequest: LoginRequest, response: HttpServletResponse): LoginResponse {
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(loginRequest.username, loginRequest.password)
         )

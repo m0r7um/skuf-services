@@ -50,11 +50,12 @@ class AuthTokenFilter(
     }
 
     private fun parseJwt(request: HttpServletRequest): String? {
-        val headerAuth = request.getHeader("Authorization")
+        val headerAuth = request.cookies.find { it.name == "Authorization" }?.value ?: return null
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7)
+        if (StringUtils.hasText(headerAuth)) {
+            return headerAuth
         }
+
         return null
     }
 }

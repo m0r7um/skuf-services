@@ -469,6 +469,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify({ service_id: serviceId, type: type, content: content }),
         })
@@ -484,16 +485,18 @@
     }
 
     function submitOrderWithoutOverlay(serviceId) {
+        const serviceType = window.serviceType
         fetch('http://localhost:8080/orders', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ serviceId }),
+            body: JSON.stringify({ type: serviceType, service_id: serviceId }),
         })
             .then(response => response.json())
             .then(data => {
-                alert('Заказ успешно оформлен!');
+                window.location.href = 'http://localhost:8080/payment'
             })
             .catch(error => {
                 alert('Ошибка при оформлении заказа');

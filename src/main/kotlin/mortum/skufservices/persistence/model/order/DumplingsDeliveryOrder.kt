@@ -6,16 +6,17 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
 import mortum.skufservices.persistence.model.service.ServiceModel
 import mortum.skufservices.persistence.model.user.User
+import java.math.BigDecimal
 
 @Entity
 @DiscriminatorValue(value = "DUMPLINGS")
 class DumplingsDeliveryOrder(
-    val totalPrice: Double,
+    totalPrice: BigDecimal,
     @OneToMany
     @JoinColumn(name = "order_id")
-    val orderContent: List<DumplingsDeliveryOrderContent>,
-    comment: String,
-    rating: Byte,
+    val content: List<DumplingsDeliveryOrderContent>?,
+    comment: String?,
+    rating: Byte?,
     status: OrderStatus,
     service: ServiceModel,
     user: User,
@@ -25,4 +26,5 @@ class DumplingsDeliveryOrder(
     status = status,
     service = service,
     user = user,
+    totalPrice = totalPrice,
 )

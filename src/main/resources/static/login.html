@@ -185,7 +185,7 @@
 
             if (response.ok) {
                 const data = await response.json();
-                localStorage.setItem('token', data.token); // Сохранение токена
+                document.cookie = `Authorization=${data.token};` // Сохранение токена
                 successMessage.style.display = 'block';
             } else {
                 throw new Error('Авторизация не удалась');
