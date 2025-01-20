@@ -1,6 +1,7 @@
 package mortum.skufservices.controller
 
 import mortum.skufservices.dto.GetPageServiceResponse
+import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.persistence.model.service.ServiceType
 import mortum.skufservices.service.ServiceModelService
 import org.springframework.web.bind.annotation.GetMapping

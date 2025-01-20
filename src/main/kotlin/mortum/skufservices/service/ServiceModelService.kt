@@ -5,10 +5,11 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
 import mortum.skufservices.dto.GetPageServiceResponse
+import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.mapper.ServiceMapper
 import mortum.skufservices.persistence.model.service.ServiceModel
 import mortum.skufservices.persistence.model.service.ServiceType
-import mortum.skufservices.persistence.repository.order.OrderRepository
+import mortum.skufservices.persistence.repository.service.ServiceRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import kotlin.math.ceil
@@ -17,6 +18,7 @@ import kotlin.math.ceil
 class ServiceModelService(
     val serviceMapper: ServiceMapper,
     val entityManager: EntityManager,
+    val serviceRepository: ServiceRepository,
 ) {
 
     fun getAll(page: Int, search: String?, type: List<ServiceType>?): GetPageServiceResponse {
@@ -37,7 +39,7 @@ class ServiceModelService(
     }
 
     fun getById(id: String): GetServiceResponse? {
-        return orderRepository.findByIdOrNull(id)?.let { serviceMapper.mapToGetServiceResponse(it) }
+        return serviceRepository.findByIdOrNull(id)?.let { serviceMapper.mapToGetServiceResponse(it) }
     }
 
     private fun generateQuery(builder: CriteriaBuilder, root: Root<ServiceModel>, search: String?, type: List<ServiceType>?): Predicate? {
