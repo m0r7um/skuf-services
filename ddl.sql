@@ -154,15 +154,20 @@ create table orders
     status      order_status                         not null,
     service_id  varchar(36) REFERENCES service (id) on delete cascade not null,
     user_id     varchar(36) REFERENCES users (id)  on delete cascade          not null,
-    address     text                                 not null,
-    rating      integer CHECK (rating >= 0 AND rating <= 5)
+    address     text,
+    rating      integer CHECK (rating >= 0 AND rating <= 5),
+    type       text not null
 );
 
-INSERT INTO orders(id, total_price, comment, status, service_id, user_id, address, rating)
-VALUES ('3aa6762c-1b94-48e9-a676-2c1b9448e9af', 12232.321, null, 'CANCELLED', 'ae7ad77d-096f-4fc8-bad7-7d096f3fc86a', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Смирнова 1', 3),
-       ('e6971157-861c-470b-9711-57861c370b3c', 45456, 'qweewrhrth', 'PAYMENT_AWAITING', 'e406c625-64ee-4b06-86c6-2564eefb06c2', 'dddddddd-dddd-dddd-dddd-dddddddddddd',  'Суворова 19', 5),
-       ('39d37332-de50-40b9-9373-32de5080b981', 43, 'gbrtnertertbsdfvsdfbrfb', 'COMPLETED', 'e406c625-64ee-4b06-86c6-2564eefb06c2', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Ленина 33', 1),
-       ('7ce1793a-63a3-4913-a179-3a63a32913e2', 6534, null, 'IN_PROGRESS', '53d5aebe-ebea-4da8-95ae-beebea4da887', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Карамазовы 55', 4);
+INSERT INTO orders(id, total_price, comment, status, service_id, user_id, address, rating, type)
+-- VALUES ('327dfbc0-d0be-4f23-bdfb-c0d0be3f237f', 'Объявление 1', 1000.23, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'description', 'WOT'),
+--        ('53d5aebe-ebea-4da8-95ae-beebea4da887', 'Доставка бульменей', 1222.23, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'description2', 'ALCOHOL'),
+--        ('e406c625-64ee-4b06-86c6-2564eefb06c2', 'Только массаж!', 4322.23, 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'description3', 'LAUNDRY'),
+--        ('ae7ad77d-096f-4fc8-bad7-7d096f3fc86a', 'Услуга 99', 3453.23, 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'description4', 'ALTUSHKA');
+VALUES ('3aa6762c-1b94-48e9-a676-2c1b9448e9af', 12232.321, null, 'CANCELLED', 'ae7ad77d-096f-4fc8-bad7-7d096f3fc86a', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Смирнова 1', 3, 'ALTUSHKA'),
+       ('e6971157-861c-470b-9711-57861c370b3c', 45456, 'qweewrhrth', 'PAYMENT_AWAITING', 'e406c625-64ee-4b06-86c6-2564eefb06c2', 'dddddddd-dddd-dddd-dddd-dddddddddddd',  'Суворова 19', 5, 'LAUNDRY'),
+       ('39d37332-de50-40b9-9373-32de5080b981', 43, 'gbrtnertertbsdfvsdfbrfb', 'COMPLETED', 'e406c625-64ee-4b06-86c6-2564eefb06c2', 'dddddddd-dddd-dddd-dddd-dddddddddddd', 'Ленина 33', 1, 'LAUNDRY'),
+       ('7ce1793a-63a3-4913-a179-3a63a32913e2', 6534, null, 'IN_PROGRESS', '53d5aebe-ebea-4da8-95ae-beebea4da887', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', 'Карамазовы 55', 4, 'ALCOHOL');
 
 create table content_of_order_of_alcohol
 (

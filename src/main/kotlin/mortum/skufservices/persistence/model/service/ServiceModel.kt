@@ -6,13 +6,13 @@ import mortum.skufservices.persistence.model.user.User
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import java.math.BigDecimal
+import java.util.*
 
 @Entity
 @Table(name = "service")
 class ServiceModel(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
 
     val title: String,
 

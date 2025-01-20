@@ -9,5 +9,4 @@ data class GetServiceResponse(
     val type: String,
     val price: BigDecimal,
     val user: UserResponse,
-) {
-}
+)

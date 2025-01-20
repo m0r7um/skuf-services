@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали Услуги</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Rubik', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            z-index: 10;
+        }
+
+        .header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Rubik', Arial, sans-serif;
+            font-size: 20px;
+            margin: 0;
+        }
+
+        .header h1 .blue {
+            color: #0074d9;
+        }
+
+        .header h1 .red {
+            color: #ff0000;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            width: 100%;
+            margin-top: 80px; /* Отступ, чтобы избежать перекрытия шапкой */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 600px;
+            height: calc(100vh - 120px); /* Высота экрана минус шапка и отступы */
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            overflow: hidden;
+            text-align: left;
+            font-size: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #005baa;
+            margin: 0;
+            text-align: center;
+        }
+
+        .card-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto; /* Добавляем прокрутку для длинного текста */
+        }
+
+        .card-text {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .card-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .card-footer {
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: 'Rubik', Arial, sans-serif;
+            text-align: center;
+            text-decoration: none;
+            background-color: #005baa;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
+        .button:hover {
+            background-color: #003f7d;
+        }
+
+        .back-button {
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            background-color: #ddd;
+            color: #333;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background-color: #ccc;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .order-form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-form h3 {
+            margin-top: 0;
+            color: #005baa;
+        }
+
+        .item-list div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .item-list input {
+            width: 60px;
+            text-align: right;
+        }
+
+        .order-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .order-form input,
+        .order-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .order-form button {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            background-color: #005baa;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .order-form button:hover {
+            background-color: #003f7d;
+        }
+
+        .item-list {
+            margin-top: 10px;
+        }
+
+        .item-list div {
+            margin-bottom: 10px;
+        }
+
+        .item-list input {
+            width: 60px;
+            margin-left: 10px;
+        }
+
+        .order-form button {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            background-color: #005baa;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px; /* Отступ между кнопками */
+        }
+
+        .order-form button:hover {
+            background-color: #003f7d;
+        }
+
+        .order-form .back-button {
+            background-color: #ccc; /* Серый цвет */
+            color: #333;
+        }
+
+        .order-form .back-button:hover {
+            background-color: #bbb; /* При наведении - чуть темнее */
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <img src="logo.png" alt="Логотип">
+    <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
+</div>
+<div class="content">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title" id="service-name">Название услуги</h2>
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>Тип услуги:</strong> <span id="service-type">Не указан</span></p>
+            <p class="card-text"><strong>Описание:</strong> <span id="service-description">Нет описания</span></p>
+            <p class="card-text"><strong>Исполнитель:</strong> <span id="service-provider">Нет указан</span></p>
+            <p class="card-price" id="service-price">Стоимость: Не указана</p>
+        </div>
+        <div class="card-footer">
+            <button class="back-button" onclick="goBack()">Назад</button>
+            <button class="button" onclick="handleOrder()">Заказать услугу</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="order-overlay" style="display: none;">
+    <div class="order-form">
+        <h3>Оформление заказа</h3>
+        <div id="item-list" class="item-list"></div>
+        <div id="total-price" style="margin-top: 10px; font-size: 16px; font-weight: bold;">Итоговая цена: 0 ₽</div>
+        <button onclick="submitOrder()">Подтвердить</button>
+        <button class="back-button" onclick="hideOverlay()">Назад</button>
+    </div>
+</div>
+
+<script>
+    async function fetchServiceDetails() {
+        const serviceId = new URLSearchParams(window.location.search).get('id');
+        if (!serviceId) {
+            alert('Идентификатор услуги не указан');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/service/${serviceId}`);
+            if (!response.ok) {
+                throw new Error('Ошибка при загрузке данных услуги');
+            }
+
+            const service = await response.json();
+            document.getElementById('service-name').textContent = service.title || 'Без названия';
+            document.getElementById('service-type').textContent = service.type || 'Не указан';
+            document.getElementById('service-description').textContent = service.description || 'Нет описания';
+            document.getElementById('service-provider').textContent = `${service.user.name} ${service.user.surname} (${service.user.login})` || 'Нет описания';
+            document.getElementById('service-price').textContent = service.price ? `Стоимость: ${service.price} ₽` : 'Стоимость: Не указана';
+
+            // Сохраняем тип услуги в глобальную переменную для использования при заказе
+            window.serviceType = service.type;
+            window.servicePrice = service.price;
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+
+    async function handleOrder() {
+        const serviceId = new URLSearchParams(window.location.search).get('id');
+
+        // Если тип услуги "DUMPLINGS" или "ALCOHOL", откроем оверлей
+        if (window.serviceType === 'DUMPLINGS' || window.serviceType === 'ALCOHOL') {
+            await openOrderForm(window.serviceType);
+        } else {
+            // Для других типов сразу отправляем запрос на создание заказа
+            submitOrderWithoutOverlay(serviceId);
+        }
+    }
+
+    async function openOrderForm(serviceType) {
+        document.getElementById('total-price').textContent = 'Итоговая цена: 0 ₽'
+        document.getElementById('order-overlay').style.display = 'flex';
+
+        const itemListDiv = document.getElementById('item-list');
+        itemListDiv.innerHTML = ''; // Очистить список перед добавлением
+
+        const totalPriceDiv = document.getElementById('total-price'); // Элемент для отображения итоговой цены
+        let totalPrice = 0; // Переменная для хранения общей стоимости
+
+        try {
+            const response = await fetch(`http://localhost:8080/alcohol-drinks`);
+            if (!response.ok) {
+                throw new Error('Ошибка при загрузке товаров');
+            }
+
+            const items = await response.json();
+
+            items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.style.display = 'flex';
+                itemDiv.style.alignItems = 'center';
+                itemDiv.style.justifyContent = 'space-between';
+                itemDiv.style.marginBottom = '10px';
+
+                const itemLabel = document.createElement('span');
+                itemLabel.textContent = item.name;
+                itemLabel.style.marginRight = '10px';
+                itemLabel.style.flex = '1'; // Выравнивание по левому краю
+
+                // Добавляем элемент для отображения цены товара
+                const priceLabel = document.createElement('span');
+                priceLabel.textContent = `${item.price} ₽`; // Здесь предполагается, что цена у товара в поле `price`
+                priceLabel.style.fontSize = '14px'; // Меньший шрифт для цены
+                priceLabel.style.color = 'gray'; // Цвет текста для цены
+                priceLabel.style.marginLeft = '10px'; // Отступ от названия товара
+
+                const inputField = document.createElement('input');
+                inputField.type = 'number';
+                inputField.min = '0';
+                inputField.value = '0';
+                inputField.id = `item-${item.id}`;
+                inputField.style.width = '60px';
+                inputField.style.textAlign = 'right';
+                inputField.style.marginRight = '5px';
+
+                inputField.oninput = function(event) {
+                    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                    updateTotalPrice(); // Обновить итоговую цену при изменении количества
+                };
+
+                const controlsDiv = document.createElement('div');
+                controlsDiv.style.display = 'flex';
+                controlsDiv.style.flexDirection = 'column';
+                controlsDiv.style.marginLeft = '5px';
+
+                const incrementButton = document.createElement('button');
+                incrementButton.textContent = '+';
+                incrementButton.style.width = '30px';
+                incrementButton.style.height = '30px';
+                incrementButton.style.display = 'flex';
+                incrementButton.style.alignItems = 'center';
+                incrementButton.style.justifyContent = 'center';
+                incrementButton.style.marginBottom = '5px';
+                incrementButton.onclick = function () {
+                    inputField.value = parseInt(inputField.value) + 1;
+                    updateTotalPrice(); // Обновить итоговую цену при изменении количества
+                };
+
+                const decrementButton = document.createElement('button');
+                decrementButton.textContent = '-';
+                decrementButton.style.width = '30px';
+                decrementButton.style.height = '30px';
+                decrementButton.style.display = 'flex';
+                decrementButton.style.alignItems = 'center';
+                decrementButton.style.justifyContent = 'center';
+                decrementButton.onclick = function () {
+                    const value = Math.max(0, parseInt(inputField.value) - 1);
+                    inputField.value = value;
+                    updateTotalPrice(); // Обновить итоговую цену при изменении количества
+                };
+
+                controlsDiv.appendChild(incrementButton);
+                controlsDiv.appendChild(decrementButton);
+
+                itemDiv.appendChild(itemLabel);
+                itemDiv.appendChild(priceLabel); // Добавляем цену под названием
+                itemDiv.appendChild(inputField);
+                itemDiv.appendChild(controlsDiv);
+
+                itemListDiv.appendChild(itemDiv);
+
+                // Функция для обновления итоговой цены
+                function updateTotalPrice() {
+                    totalPrice = 0; // Сбросить общую цену перед пересчетом
+                    items.forEach(item => {
+                        const itemQuantity = parseInt(document.getElementById(`item-${item.id}`).value) || 0;
+                        totalPrice += itemQuantity * item.price; // Пересчитываем итоговую цену
+                    });
+                    totalPriceDiv.textContent = `Итоговая цена: ${totalPrice} ₽`; // Обновить отображение цены
+                }
+            });
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    function hideOverlay() {
+        document.getElementById('order-overlay').style.display = 'none';
+    }
+
+    function submitOrder() {
+        const serviceId = new URLSearchParams(window.location.search).get('id');
+        const type = window.serviceType;
+        const content = {};
+
+        // Сбор данных о количестве каждого товара
+        const itemListDiv = document.getElementById('item-list');
+        itemListDiv.querySelectorAll('input').forEach(input => {
+            content[input.id] = parseInt(input.value);
+        });
+
+        // Отправка заказа
+        fetch('http://localhost:8080/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ service_id: serviceId, type: type, content: content }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('Заказ успешно оформлен!');
+                document.getElementById('order-overlay').style.display = 'none';
+            })
+            .catch(error => {
+                alert('Ошибка при оформлении заказа');
+                document.getElementById('order-overlay').style.display = 'none';
+            });
+    }
+
+    function submitOrderWithoutOverlay(serviceId) {
+        fetch('http://localhost:8080/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ serviceId }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('Заказ успешно оформлен!');
+            })
+            .catch(error => {
+                alert('Ошибка при оформлении заказа');
+            });
+    }
+
+    // Загрузка данных услуги при загрузке страницы
+    window.onload = fetchServiceDetails;
+</script>
+</body>
+</html>

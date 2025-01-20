@@ -8,8 +8,7 @@ import java.util.*
 @Table(name = "role")
 class Role(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID? = null,
+    val id: String? = UUID.randomUUID().toString(),
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

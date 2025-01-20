@@ -7,8 +7,7 @@ import java.util.*
 @Table(name = "dumplings_delivery_order_content")
 class DumplingsDeliveryOrderContent(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID,
+    val id: String = UUID.randomUUID().toString(),
 
     @ManyToOne
     val order: DumplingsDeliveryOrder,

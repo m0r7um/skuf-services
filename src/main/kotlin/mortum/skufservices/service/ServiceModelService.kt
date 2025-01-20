@@ -3,6 +3,7 @@ package mortum.skufservices.service
 import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.mapper.ServiceMapper
 import mortum.skufservices.persistence.repository.order.OrderRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -13,5 +14,9 @@ class ServiceModelService(
 
     fun getAll(): List<GetServiceResponse> {
         return orderRepository.findAll().map { serviceMapper.mapToGetServiceResponse(it) }
+    }
+
+    fun getById(id: String): GetServiceResponse? {
+        return orderRepository.findByIdOrNull(id)?.let { serviceMapper.mapToGetServiceResponse(it) }
     }
 }

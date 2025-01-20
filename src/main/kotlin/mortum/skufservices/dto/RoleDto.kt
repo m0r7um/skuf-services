@@ -4,6 +4,6 @@ import mortum.skufservices.persistence.model.user.RoleEnum
 import java.util.UUID
 
 data class RoleDto(
-    val id: UUID?,
+    val id: String?,
     val name: RoleEnum,
 )

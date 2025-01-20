@@ -13,7 +13,7 @@ data class UserDto(
     val surname: @NotBlank String,
     val birthDate: Instant,
 ) {
-    val id: UUID? = null
+    val id: String = UUID.randomUUID().toString()
 
     var roles: Set<RoleDto> = HashSet()
 

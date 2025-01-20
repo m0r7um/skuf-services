@@ -4,26 +4,32 @@ import jakarta.persistence.*
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
 import mortum.skufservices.persistence.model.service.ServiceModel
+import mortum.skufservices.persistence.model.user.User
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import java.util.UUID
 
 @Entity
-@DiscriminatorColumn
+@DiscriminatorColumn(name = "type")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "service_order")
+@Table(name = "orders")
 data class Order(
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID? = null,
+    val id: String = UUID.randomUUID().toString(),
 
-    val comment: String,
+    val comment: String?,
 
     @Min(0)
     @Max(5)
-    val rating: Byte,
+    val rating: Byte?,
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     val status: OrderStatus,
 
     @ManyToOne
     val service: ServiceModel,
+
+    @ManyToOne
+    val user: User,
 )

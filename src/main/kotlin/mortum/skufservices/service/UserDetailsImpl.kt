@@ -6,11 +6,10 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.io.Serial
-import java.util.UUID
 import java.util.stream.Collectors
 
 class UserDetailsImpl(
-    val id: UUID?,
+    val id: String?,
     private val username: String,
     @field:JsonIgnore private val password: String,
     private val authorities: Collection<GrantedAuthority>

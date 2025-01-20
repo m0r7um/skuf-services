@@ -17,8 +17,7 @@ class User(
     val birthDate: Instant,
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    var id: UUID? = null
+    var id: String = UUID.randomUUID().toString()
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
