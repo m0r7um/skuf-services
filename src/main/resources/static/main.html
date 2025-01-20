@@ -229,62 +229,143 @@
     <div class="dropdown">
         <div class="dropdown-toggle">Категории</div>
         <div class="dropdown-menu">
-            <label><input type="checkbox" value="1"> Категория1</label>
-            <label><input type="checkbox" value="2"> Категория2</label>
-            <label><input type="checkbox" value="3"> Категория3</label>
-            <label><input type="checkbox" value="4"> Категория4</label>
-            <label><input type="checkbox" value="5"> Категория5</label>
+            <label><input type="checkbox" value="DUMPLINGS">Пельмени</label>
+            <label><input type="checkbox" value="ALCOHOL">Алкоголь</label>
+            <label><input type="checkbox" value="ALTUSHKA">Альтушки</label>
+            <label><input type="checkbox" value="WOT">Танки</label>
+            <label><input type="checkbox" value="LAUNDRY">Прачка</label>
         </div>
     </div>
     <button>Искать</button>
 </div>
 
-<div class="cards">
-    <div class="card">
-        <h3>Заголовок услуги 1</h3>
-        <p class="price">1000 ₽</p>
-        <p>Описание услуги 1</p>
-        <p class="author">Автор: Иван Иванов</p>
-        <div class="category-date">
-            <p class="date">01.01.2025</p>
-            <p class="category">Категория 1</p>
-        </div>
-    </div>
-    <div class="card">
-        <h3>Заголовок услуги 2</h3>
-        <p class="price">2000 ₽</p>
-        <p>Описание услуги 2</p>
-        <p class="author">Автор: Петр Петров</p>
-        <div class="category-date">
-            <p class="date">02.01.2025</p>
-            <p class="category">Категория 2</p>
-        </div>
-    </div>
-    <!-- Добавьте больше карточек при необходимости -->
-</div>
+<div class="cards"></div>
 
-<div class="pagination">
-    <button>1</button>
-    <button>...</button>
-    <button>2</button>
-    <button>3</button>
-    <button disabled>4</button>
-    <button>5</button>
-    <button>...</button>
-    <button>10</button>
-</div>
+<div class="pagination"></div>
 
 <script>
-    document.querySelector('.dropdown-toggle').addEventListener('click', function() {
+    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
         this.parentElement.classList.toggle('open');
     });
 
-    window.addEventListener('click', function(e) {
+    window.addEventListener('click', function (e) {
         const dropdown = document.querySelector('.dropdown');
         if (!dropdown.contains(e.target)) {
             dropdown.classList.remove('open');
         }
     });
+
+    function renderPagination(currentPage, totalPage) {
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = '';
+
+        const createButton = (text, isActive = false, isDots = false) => {
+            const button = document.createElement('button');
+            button.textContent = text;
+            if (isActive) button.disabled = true;
+            if (!isDots) {
+                button.addEventListener('click', () => {
+                    fetchAndRenderCards(Number(text));
+                });
+            } else {
+                button.disabled = true;
+            }
+            return button;
+        };
+
+        // Кнопка первой страницы
+        paginationContainer.appendChild(createButton(1, currentPage === 1));
+
+        // Троеточие после первой страницы, если необходимо
+        if (currentPage > 4) {
+            paginationContainer.appendChild(createButton('...', false, true));
+        }
+
+        // Отображение диапазона страниц вокруг текущей
+        for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPage, currentPage + 2); i++) {
+            if (i !== 1 && i !== totalPage) {
+                paginationContainer.appendChild(createButton(i, i === currentPage));
+            }
+        }
+
+        // Троеточие перед последней страницей, если необходимо
+        if (currentPage < totalPage - 3) {
+            paginationContainer.appendChild(createButton('...', false, true));
+        }
+
+        // Кнопка последней страницы
+        if (totalPage !== 1) {
+            paginationContainer.appendChild(createButton(totalPage, currentPage === totalPage));
+        }
+    }
+
+    const createButton = (text, isActive = false, isDots = false) => {
+        const button = document.createElement('button');
+        button.textContent = text;
+        if (isActive) button.disabled = true;
+        if (!isDots) {
+            button.addEventListener('click', () => {
+                fetchAndRenderCards(Number(text));
+            });
+        } else {
+            button.disabled = true;
+        }
+        return button;
+    };
+
+    function fetchAndRenderCards(page = 1) {
+        const input = document.querySelector('.search-bar input').value;
+        const url = new URL('http://localhost:8080/service/all');
+
+        url.searchParams.append('search', input);
+        url.searchParams.append('page', page);
+
+        const selectedCategories = Array.from(document.querySelectorAll('.dropdown-menu input:checked'));
+        selectedCategories.forEach(category => {
+            url.searchParams.append('type', category.value);
+        });
+
+        fetch(url, {
+            method: 'GET',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const cardsContainer = document.querySelector('.cards');
+                cardsContainer.innerHTML = '';
+
+                data.data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    card.innerHTML = `
+                        <h3>${item.title}</h3>
+                        <p class="price">${item.price.toFixed(2)} ₽</p>
+                        <p>${item.description}</p>
+                        <div class="category-date">
+                            <p class="author">Исполнитель: ${item.user.name} ${item.user.surname}</p>
+                            <p class="category">Категория: ${item.type}</p>
+                        </div>
+                    `;
+
+                    cardsContainer.appendChild(card);
+                });
+
+                renderPagination(data.currentPage, data.totalPage);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }
+
+    document.querySelector('.search-bar button').addEventListener('click', () => fetchAndRenderCards());
+
+    // Выполнить запрос при загрузке страницы
+    window.addEventListener('DOMContentLoaded', () => fetchAndRenderCards());
 </script>
 </body>
 </html>
