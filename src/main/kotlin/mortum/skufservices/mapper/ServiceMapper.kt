@@ -1,7 +1,7 @@
 package mortum.skufservices.mapper
 
-import mortum.skufservices.dto.GetPageServiceResponse
 import mortum.skufservices.dto.GetServiceResponse
+import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.dto.UserResponse
 import mortum.skufservices.persistence.model.service.ServiceModel
 import org.springframework.stereotype.Component
@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component
 @Component
 class ServiceMapper {
 
-    fun mapToGetPageServiceResponse(services: List<ServiceModel>, currentPage: Int, countPage: Int): GetPageServiceResponse {
-        return GetPageServiceResponse(
+    fun mapToGetPageServiceResponse(services: List<ServiceModel>, currentPage: Int, countPage: Int): PageWrapper<GetServiceResponse> {
+        return PageWrapper(
             data = services.map { mapToGetServiceResponse(it) },
             currentPage = currentPage,
             totalPage = countPage,

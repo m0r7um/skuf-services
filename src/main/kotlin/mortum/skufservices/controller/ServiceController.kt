@@ -1,7 +1,7 @@
 package mortum.skufservices.controller
 
-import mortum.skufservices.dto.GetPageServiceResponse
 import mortum.skufservices.dto.GetServiceResponse
+import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.persistence.model.service.ServiceType
 import mortum.skufservices.service.ServiceModelService
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,8 +21,16 @@ class ServiceController(
         @RequestParam("search") search: String?,
         @RequestParam("type") type: List<ServiceType>?,
         @RequestParam("page") page: Int,
-    ): GetPageServiceResponse {
+    ): PageWrapper<GetServiceResponse> {
         return serviceModelService.getAll(page, search, type)
+    }
+
+    @GetMapping("/byProvider")
+    fun getByProvider(
+        @RequestParam("search") search: String?,
+        @RequestParam("page") page: Int,
+    ): PageWrapper<GetServiceResponse> {
+        return serviceModelService.getByProvider(page, search)
     }
 
     @GetMapping("/{id}")

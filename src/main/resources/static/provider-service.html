@@ -72,6 +72,21 @@
             background-color: #005baa;
         }
 
+        .search-bar .create-button {
+            margin-left: auto;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .search-bar .create-button:hover {
+            background-color: #218838;
+        }
+
         .dropdown {
             position: relative;
             display: inline-block;
@@ -226,17 +241,8 @@
 
 <div class="search-bar">
     <input type="text" placeholder="Поиск по названиям">
-    <div class="dropdown">
-        <div class="dropdown-toggle">Категории</div>
-        <div class="dropdown-menu">
-            <label><input type="checkbox" value="DUMPLINGS">Пельмени</label>
-            <label><input type="checkbox" value="ALCOHOL">Алкоголь</label>
-            <label><input type="checkbox" value="ALTUSHKA">Альтушки</label>
-            <label><input type="checkbox" value="WOT">Танки</label>
-            <label><input type="checkbox" value="LAUNDRY">Прачка</label>
-        </div>
-    </div>
     <button>Искать</button>
+    <button class="create-button">Создать объявление</button>
 </div>
 
 <div class="cards"></div>
@@ -244,8 +250,8 @@
 <div class="pagination"></div>
 
 <script>
-    document.querySelector('.dropdown-toggle').addEventListener('click', function () {
-        this.parentElement.classList.toggle('open');
+    document.querySelector('.create-button').addEventListener('click', function () {
+        window.location.href = `http://localhost:8080/service/add`;
     });
 
     window.addEventListener('click', function (e) {
@@ -272,6 +278,8 @@
             }
             return button;
         };
+
+        if (totalPage ===  0) return
 
         // Кнопка первой страницы
         paginationContainer.appendChild(createButton(1, currentPage === 1));
@@ -315,18 +323,13 @@
 
     function fetchAndRenderCards(page = 1) {
         const input = document.querySelector('.search-bar input').value;
-        const url = new URL('http://localhost:8080/service/all');
+        const url = new URL('http://localhost:8080/service/byProvider');
 
         url.searchParams.append('search', input);
         url.searchParams.append('page', page);
 
-        const selectedCategories = Array.from(document.querySelectorAll('.dropdown-menu input:checked'));
-        selectedCategories.forEach(category => {
-            url.searchParams.append('type', category.value);
-        });
-
         fetch(url, {
-            method: 'GET',
+            method: 'GET'
         })
             .then(response => {
                 if (!response.ok) {

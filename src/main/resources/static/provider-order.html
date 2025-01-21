@@ -227,13 +227,12 @@
 <div class="search-bar">
     <input type="text" placeholder="Поиск по названиям">
     <div class="dropdown">
-        <div class="dropdown-toggle">Категории</div>
+        <div class="dropdown-toggle">Статус заказа</div>
         <div class="dropdown-menu">
-            <label><input type="checkbox" value="DUMPLINGS">Пельмени</label>
-            <label><input type="checkbox" value="ALCOHOL">Алкоголь</label>
-            <label><input type="checkbox" value="ALTUSHKA">Альтушки</label>
-            <label><input type="checkbox" value="WOT">Танки</label>
-            <label><input type="checkbox" value="LAUNDRY">Прачка</label>
+            <label><input type="checkbox" value="AWAITING_CONFIRMATION">Ожидает подтверждения</label>
+            <label><input type="checkbox" value="IN_PROGRESS">Ожидает выполнения</label>
+            <label><input type="checkbox" value="CANCELLED">Отклонен</label>
+            <label><input type="checkbox" value="COMPLETED">Завершен</label>
         </div>
     </div>
     <button>Искать</button>
@@ -273,7 +272,9 @@
             return button;
         };
 
-        // Кнопка первой страницы
+        if (totalPage ===  0) return
+
+            // Кнопка первой страницы
         paginationContainer.appendChild(createButton(1, currentPage === 1));
 
         // Троеточие после первой страницы, если необходимо
@@ -315,18 +316,18 @@
 
     function fetchAndRenderCards(page = 1) {
         const input = document.querySelector('.search-bar input').value;
-        const url = new URL('http://localhost:8080/service/all');
+        const url = new URL('http://localhost:8080/orders');
 
         url.searchParams.append('search', input);
         url.searchParams.append('page', page);
 
         const selectedCategories = Array.from(document.querySelectorAll('.dropdown-menu input:checked'));
         selectedCategories.forEach(category => {
-            url.searchParams.append('type', category.value);
+            url.searchParams.append('status', category.value);
         });
 
         fetch(url, {
-            method: 'GET',
+            method: 'GET'
         })
             .then(response => {
                 if (!response.ok) {
@@ -344,11 +345,11 @@
 
                     card.innerHTML = `
                         <h3>${item.title}</h3>
-                        <p class="price">${item.price.toFixed(2)} ₽</p>
+                        <p class="price">${item.totalPrice.toFixed(2)} ₽</p>
                         <p>${item.description}</p>
                         <div class="category-date">
                             <p class="author">Исполнитель: ${item.user.name} ${item.user.surname}</p>
-                            <p class="category">Категория: ${item.type}</p>
+                            <p class="category">Статус: ${item.status}</p>
                         </div>
                     `;
                     card.dataset.id = item.id;
