@@ -266,7 +266,7 @@
 </head>
 <body>
 <div class="header">
-    <img src="logo.png" alt="Логотип">
+    <img src="../logo.png" alt="Логотип">
     <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
 </div>
 <div class="content">
@@ -291,7 +291,7 @@
     <div class="order-form">
         <h3>Оформление заказа</h3>
         <div id="item-list" class="item-list"></div>
-        <div id="total-price" style="margin-top: 10px; font-size: 16px; font-weight: bold;">Итоговая цена: 0 ₽</div>
+        <div id="total-price" style="margin-top: 10px; font-size: 16px; font-weight: bold;"></div>
         <button onclick="submitOrder()">Подтвердить</button>
         <button class="back-button" onclick="hideOverlay()">Назад</button>
     </div>
@@ -342,14 +342,17 @@
         }
     }
 
-    async function openOrderForm(serviceType) {
-        document.getElementById('total-price').textContent = 'Итоговая цена: 0 ₽'
+    async function openOrderForm() {
+        document.getElementById('total-price').textContent = `Итоговая цена: ${window.servicePrice} ₽`;
         document.getElementById('order-overlay').style.display = 'flex';
 
         const itemListDiv = document.getElementById('item-list');
         itemListDiv.innerHTML = ''; // Очистить список перед добавлением
 
         const totalPriceDiv = document.getElementById('total-price'); // Элемент для отображения итоговой цены
+        const confirmButton = document.querySelector('.order-form button'); // Кнопка "Подтвердить"
+        confirmButton.hidden = true; // Делаем кнопку невидимой по умолчанию
+
         let totalPrice = 0; // Переменная для хранения общей стоимости
 
         try {
@@ -372,12 +375,11 @@
                 itemLabel.style.marginRight = '10px';
                 itemLabel.style.flex = '1'; // Выравнивание по левому краю
 
-                // Добавляем элемент для отображения цены товара
                 const priceLabel = document.createElement('span');
-                priceLabel.textContent = `${item.price} ₽`; // Здесь предполагается, что цена у товара в поле `price`
-                priceLabel.style.fontSize = '14px'; // Меньший шрифт для цены
-                priceLabel.style.color = 'gray'; // Цвет текста для цены
-                priceLabel.style.marginLeft = '10px'; // Отступ от названия товара
+                priceLabel.textContent = `${item.price} ₽`;
+                priceLabel.style.fontSize = '14px';
+                priceLabel.style.color = 'gray';
+                priceLabel.style.marginLeft = '10px';
 
                 const inputField = document.createElement('input');
                 inputField.type = 'number';
@@ -408,7 +410,7 @@
                 incrementButton.style.marginBottom = '5px';
                 incrementButton.onclick = function () {
                     inputField.value = parseInt(inputField.value) + 1;
-                    updateTotalPrice(); // Обновить итоговую цену при изменении количества
+                    updateTotalPrice();
                 };
 
                 const decrementButton = document.createElement('button');
@@ -421,34 +423,39 @@
                 decrementButton.onclick = function () {
                     const value = Math.max(0, parseInt(inputField.value) - 1);
                     inputField.value = value;
-                    updateTotalPrice(); // Обновить итоговую цену при изменении количества
+                    updateTotalPrice();
                 };
 
                 controlsDiv.appendChild(incrementButton);
                 controlsDiv.appendChild(decrementButton);
 
                 itemDiv.appendChild(itemLabel);
-                itemDiv.appendChild(priceLabel); // Добавляем цену под названием
+                itemDiv.appendChild(priceLabel);
                 itemDiv.appendChild(inputField);
                 itemDiv.appendChild(controlsDiv);
 
                 itemListDiv.appendChild(itemDiv);
 
-                // Функция для обновления итоговой цены
                 function updateTotalPrice() {
-                    totalPrice = 0; // Сбросить общую цену перед пересчетом
+                    totalPrice = window.servicePrice; // Сбросить общую цену перед пересчетом
+                    let totalQuantity = 0; // Считаем общее количество товаров
+
                     items.forEach(item => {
                         const itemQuantity = parseInt(document.getElementById(`item-${item.id}`).value) || 0;
-                        totalPrice += itemQuantity * item.price; // Пересчитываем итоговую цену
+                        totalPrice += itemQuantity * item.price;
+                        totalQuantity += itemQuantity;
                     });
-                    totalPriceDiv.textContent = `Итоговая цена: ${totalPrice} ₽`; // Обновить отображение цены
+
+                    totalPriceDiv.textContent = `Итоговая цена: ${totalPrice} ₽`;
+
+                    // Активировать или деактивировать кнопку в зависимости от общего количества
+                    confirmButton.hidden = totalQuantity === 0;
                 }
             });
         } catch (error) {
             alert(error.message);
         }
     }
-
     function hideOverlay() {
         document.getElementById('order-overlay').style.display = 'none';
     }
@@ -469,14 +476,12 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify({ service_id: serviceId, type: type, content: content }),
         })
             .then(response => response.json())
             .then(data => {
-                alert('Заказ успешно оформлен!');
-                document.getElementById('order-overlay').style.display = 'none';
+                window.location.href = "http://localhost:8080/payment"
             })
             .catch(error => {
                 alert('Ошибка при оформлении заказа');

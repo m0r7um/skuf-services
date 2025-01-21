@@ -1,6 +1,7 @@
 package mortum.skufservices.config
 
 import mortum.skufservices.service.UserDetailsServiceImpl
+import mortum.skufservices.utils.AccessDeniedJwtHandler
 import mortum.skufservices.utils.AuthEntryPointJwt
 import mortum.skufservices.utils.AuthTokenFilter
 import mortum.skufservices.utils.JwtUtils
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -25,6 +25,7 @@ class WebSecurityConfig(
     private val userDetailsService: UserDetailsServiceImpl,
     private val jwtUtils: JwtUtils,
     private val unauthorizedHandler: AuthEntryPointJwt,
+    private val accessDeniedJwtHandler: AccessDeniedJwtHandler,
 ) {
 
     @Bean
@@ -58,10 +59,9 @@ class WebSecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .cors{ it.disable() }
-            .exceptionHandling { exception: ExceptionHandlingConfigurer<HttpSecurity?> ->
-                exception.authenticationEntryPoint(
-                    unauthorizedHandler
-                )
+            .exceptionHandling {
+                it.authenticationEntryPoint(unauthorizedHandler)
+                it.accessDeniedHandler(accessDeniedJwtHandler)
             }
             .sessionManagement { session: SessionManagementConfigurer<HttpSecurity?> ->
                 session.sessionCreationPolicy(
@@ -74,7 +74,9 @@ class WebSecurityConfig(
                 auth.requestMatchers("/user/signup").permitAll()
                 auth.requestMatchers("/provider/signup").permitAll()
                 auth.requestMatchers("/main").hasRole("USER")
-                    .anyRequest().permitAll()
+                auth.requestMatchers("/service/add").hasRole("PROVIDER")
+
+                .anyRequest().permitAll()
             }
 
         http.authenticationProvider(authenticationProvider())

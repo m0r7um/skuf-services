@@ -20,7 +20,7 @@ class AuthEntryPointJwt : AuthenticationEntryPoint {
         authException: AuthenticationException
     ) {
         log.error("unauthorized error: {}", authException.message)
-
+        log.error(authException.toString())
         response.contentType = MediaType.APPLICATION_JSON_VALUE
         response.status = HttpServletResponse.SC_UNAUTHORIZED
 
@@ -31,7 +31,6 @@ class AuthEntryPointJwt : AuthenticationEntryPoint {
         body["path"] = request.servletPath
 
         val mapper = ObjectMapper()
-        response.sendRedirect("/login")
         mapper.writeValue(response.outputStream, body)
     }
 
