@@ -20,6 +20,7 @@ class OrderMapper {
     fun mapToGetOrderResponse(order: Order): GetOrderResponse {
         return GetOrderResponse(
             id = order.id,
+            type = order.service.type,
             title = order.service.title,
             description = order.service.description,
             status = order.status,

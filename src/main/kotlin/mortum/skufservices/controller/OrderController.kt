@@ -1,6 +1,7 @@
 package mortum.skufservices.controller
 
 import mortum.skufservices.dto.GetOrderResponse
+import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.dto.order.AddOrderRequest
 import mortum.skufservices.dto.order.AddOrderResponse
@@ -29,5 +30,10 @@ class OrderController(
     fun addOrder(@RequestBody addOrderRequest: AddOrderRequest): AddOrderResponse {
         orderService.addOrder(addOrderRequest)
         return AddOrderResponse()
+    }
+
+    @GetMapping("/{id}")
+    fun getServiceById(@PathVariable id: String): GetOrderResponse? {
+        return orderService.getById(id)
     }
 }

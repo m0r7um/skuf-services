@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
 import mortum.skufservices.dto.GetOrderResponse
+import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.dto.order.AddOrderRequest
 import mortum.skufservices.dto.order.AddOrderResponse
@@ -36,6 +37,7 @@ class OrderService(
     private val dumplingsDeliveryOrderContentRepository: DumplingsDeliveryOrderContentRepository,
 
     private val serviceRepository: ServiceRepository,
+    private val orderRepository: OrderRepository,
 
     private val userRepository: UserRepository,
 
@@ -83,6 +85,10 @@ class OrderService(
                 addLaundryOrder(addOrderRequest)
             }
         }
+    }
+
+    fun getById(id: String): GetOrderResponse? {
+        return orderRepository.findByIdOrNull(id)?.let { orderMapper.mapToGetOrderResponse(it) }
     }
 
     private fun addAlcoholDeliveryOrder(order: AddOrderRequest.AddAlcoholDeliveryOrderRequest): AddOrderResponse {
