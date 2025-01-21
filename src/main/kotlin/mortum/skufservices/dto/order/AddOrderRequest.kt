@@ -28,6 +28,10 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
         value = AddOrderRequest.AddWotOrderRequest::class,
         name = "WOT",
     ),
+    JsonSubTypes.Type(
+        value = AddOrderRequest.AddLaundryRequest::class,
+        name = "LAUNDRY",
+    ),
 )
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 sealed class AddOrderRequest {

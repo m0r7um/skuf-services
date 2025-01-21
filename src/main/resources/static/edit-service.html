@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Редактирование Услуги</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Rubik', Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .header {
+      width: 100%;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .header h1 {
+      font-family: 'Rubik', Arial, sans-serif;
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .header h1 .blue {
+      color: #0074d9;
+    }
+
+    .header h1 .red {
+      color: #ff0000;
+    }
+
+    .content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      width: 100%;
+      margin-top: 80px; /* Отступ, чтобы избежать перекрытия шапкой */
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      overflow: hidden;
+      text-align: left;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: #f8f8f8;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #005baa;
+      margin: 0;
+      text-align: center;
+    }
+
+    .card-body {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .card-footer {
+      padding: 15px;
+      background-color: #f8f8f8;
+      border-top: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      font-family: 'Rubik', Arial, sans-serif;
+      text-align: center;
+      text-decoration: none;
+      background-color: #005baa;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background-color: #003f7d;
+    }
+
+    .back-button {
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      background-color: #ddd;
+      color: #333;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <img src="../logo.png" alt="Логотип">
+  <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
+</div>
+<div class="content">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Редактирование услуги</h2>
+    </div>
+    <div class="card-body">
+      <form id="edit-service-form">
+        <div class="form-group">
+          <label for="service-title">Название услуги</label>
+          <input type="text" id="service-title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="service-type">Тип услуги</label>
+          <select id="service-type" name="type" required>
+            <option value="ALCOHOL">Доставка алкоголя</option>
+            <option value="LAUNDRY">Прачка</option>
+            <option value="WOT">Тиммейт WoT</option>
+            <option value="ALTUSHKA">Альтушка на дом</option>
+            <option value="DUMPLINGS">Доставка пельменей</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="service-description">Описание</label>
+          <textarea id="service-description" name="description" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="service-price">Стоимость</label>
+          <input type="text" id="service-price" name="price" required oninput="validatePrice(this)">
+        </div>
+      </form>
+    </div>
+    <div class="card-footer">
+      <button class="back-button" onclick="goBack()">Назад</button>
+      <button class="button" onclick="submitEditForm()">Сохранить</button>
+    </div>
+  </div>
+</div>
+<script>
+  async function fetchServiceDetails() {
+    const serviceId = new URLSearchParams(window.location.search).get('id');
+    if (!serviceId) {
+      alert('Идентификатор услуги не указан');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/service/${serviceId}`);
+      if (!response.ok) {
+        throw new Error('Ошибка при загрузке данных услуги');
+      }
+
+      const service = await response.json();
+      document.getElementById('service-title').value = service.title || '';
+      document.getElementById('service-type').value = service.type || '';
+      document.getElementById('service-description').value = service.description || '';
+      document.getElementById('service-price').value = service.price || 0;
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  function goBack() {
+    window.history.back();
+  }
+
+  async function submitEditForm() {
+    const serviceId = new URLSearchParams(window.location.search).get('id');
+    const form = document.getElementById('edit-service-form');
+
+    if (!form.reportValidity()) {
+      return;
+    }
+
+    const formData = new FormData(form);
+    const serviceData = {};
+    formData.forEach((value, key) => {
+      serviceData[key] = value;
+    });
+
+    try {
+      const response = await fetch(`http://localhost:8080/service/${serviceId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(serviceData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Ошибка при сохранении изменений');
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  function validatePrice(input) {
+    input.value = input.value
+            .replace(/[^0-9.,]/g, '') // Разрешить только цифры, точки и запятые
+            .replace(/([.,]).*?([.,])/g, '$1'); // Исключить повторные точки и запятые
+  }
+
+  window.onload = fetchServiceDetails;
+</script>
+</body>
+</html>

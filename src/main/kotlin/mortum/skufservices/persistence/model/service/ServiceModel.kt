@@ -14,13 +14,13 @@ class ServiceModel(
     @Id
     val id: String = UUID.randomUUID().toString(),
 
-    val title: String,
+    var title: String,
 
-    val description: String,
+    var description: String,
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    val type: ServiceType,
+    var type: ServiceType,
 
     @OneToMany
     @JoinColumn(name = "service_id")
@@ -29,5 +29,5 @@ class ServiceModel(
     @ManyToOne
     val user: User,
 
-    val price: BigDecimal,
+    var price: BigDecimal,
 )

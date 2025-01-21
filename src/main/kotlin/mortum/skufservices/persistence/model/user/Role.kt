@@ -2,6 +2,8 @@ package mortum.skufservices.persistence.model.user
 
 
 import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import java.util.*
 
 @Entity
@@ -12,5 +14,6 @@ class Role(
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     var name: RoleEnum,
 )

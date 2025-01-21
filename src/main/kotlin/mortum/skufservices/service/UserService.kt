@@ -27,7 +27,7 @@ class UserService(
             passwordEncoder.encode(signupRequest.password),
             name = signupRequest.name,
             surname = signupRequest.surname,
-            birthDate = signupRequest.birthDate,
+            birthDate = signupRequest.birthDate.toInstant(),
         )
         val strRoles: Set<String> = signupRequest.role
         val roles: MutableSet<RoleDto> = HashSet()
@@ -37,8 +37,8 @@ class UserService(
             roles.add(userRole)
         } else {
             strRoles.forEach { role ->
-                if (role == "admin") {
-                    val adminRole: RoleDto = roleService.findByName(RoleEnum.ROLE_ADMIN)
+                if (role == "provider") {
+                    val adminRole: RoleDto = roleService.findByName(RoleEnum.ROLE_PROVIDER)
                     roles.add(adminRole)
                 } else {
                     val userRole: RoleDto = roleService.findByName(RoleEnum.ROLE_USER)

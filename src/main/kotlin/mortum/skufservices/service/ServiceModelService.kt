@@ -5,6 +5,7 @@ import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
 import mortum.skufservices.dto.GetServiceResponse
+import mortum.skufservices.dto.UpdateServiceRequest
 import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.mapper.ServiceMapper
 import mortum.skufservices.persistence.model.service.ServiceModel
@@ -13,6 +14,7 @@ import mortum.skufservices.persistence.repository.service.ServiceRepository
 import mortum.skufservices.utils.CommonUtils
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 import kotlin.math.ceil
 
 @Service
@@ -59,6 +61,15 @@ class ServiceModelService(
 
     fun getById(id: String): GetServiceResponse? {
         return serviceRepository.findByIdOrNull(id)?.let { serviceMapper.mapToGetServiceResponse(it) }
+    }
+    fun updateServiceById(id: String, request: UpdateServiceRequest): GetServiceResponse {
+        val serviceEntity = serviceRepository.findByIdOrNull(id) ?: throw RuntimeException("Service with id $id not found")
+        serviceEntity.title = request.title
+        serviceEntity.type = request.type
+        serviceEntity.price = BigDecimal(request.price)
+        serviceEntity.description = request.description
+        serviceRepository.save(serviceEntity)
+        return serviceMapper.mapToGetServiceResponse(serviceEntity)
     }
 
     private fun generatePredicates(

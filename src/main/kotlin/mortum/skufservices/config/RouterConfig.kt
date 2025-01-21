@@ -22,6 +22,7 @@ class RouterConfig {
         val providerOrder = ClassPathResource("static/provider-order.html")
         val payment = ClassPathResource("static/payment.html")
         val addService = ClassPathResource("static/add-service.html")
+        val editService = ClassPathResource("static/edit-service.html")
         return route()
             .resource(path("/login"), login)
             .resource(path("/user/signup"), registerUser)
@@ -32,6 +33,7 @@ class RouterConfig {
             .resource(path("/provider-order"), providerOrder)
             .resource(path("/payment"), payment)
             .resource(path("/service/add"), addService)
+            .resource(path("/service/edit"), editService)
             .build()
     }
 }

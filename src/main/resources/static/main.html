@@ -354,7 +354,7 @@
                     card.dataset.id = item.id;
                     card.addEventListener('click', () => {
                         const id = card.dataset.id; // Получаем ID из data-id
-                        window.location.href = `http://localhost:8080/service?id=${id}`;
+                        window.location.href = `http://localhost:8080/user/service?id=${id}`;
                     });
 
                     cardsContainer.appendChild(card);

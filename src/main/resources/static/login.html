@@ -187,6 +187,11 @@
                 const data = await response.json();
                 document.cookie = `Authorization=${data.token};` // Сохранение токена
                 successMessage.style.display = 'block';
+                if (data.roles.includes("ROLE_PROVIDER")) {
+                    window.location.href = 'http://localhost:8080/provider-service'
+                } else {
+                    window.location.href = 'http://localhost:8080/main'
+                }
             } else {
                 throw new Error('Авторизация не удалась');
             }

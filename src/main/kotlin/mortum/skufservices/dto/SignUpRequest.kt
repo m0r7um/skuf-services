@@ -1,6 +1,7 @@
 package mortum.skufservices.dto
 
 import java.time.Instant
+import java.util.*
 
 data class SignUpRequest(
     val username: String,
@@ -8,5 +9,5 @@ data class SignUpRequest(
     val role: Set<String>,
     val name: String,
     val surname: String,
-    val birthDate: Instant,
+    val birthDate: Date,
 )
