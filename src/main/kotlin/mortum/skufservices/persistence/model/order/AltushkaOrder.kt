@@ -15,6 +15,7 @@ class AltushkaOrder(
     service: ServiceModel,
     user: User,
     totalPrice: BigDecimal,
+    address: String,
 ) : Order(
     comment = comment,
     rating = rating,
@@ -22,4 +23,5 @@ class AltushkaOrder(
     service = service,
     user = user,
     totalPrice = totalPrice,
+    address = address,
 )

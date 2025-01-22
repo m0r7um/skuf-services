@@ -12,4 +12,6 @@ data class GetOrderResponse(
     val status: OrderStatus,
     val totalPrice: BigDecimal,
     val user: UserResponse,
+    val provider: UserResponse,
+    val address: String?,
 )

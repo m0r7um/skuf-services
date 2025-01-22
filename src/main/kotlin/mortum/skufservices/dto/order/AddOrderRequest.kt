@@ -37,31 +37,37 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 sealed class AddOrderRequest {
     abstract val type: String
     abstract val serviceId: String
+    abstract val address: String
 
     data class AddAlcoholDeliveryOrderRequest(
         override val type: String = "ALCOHOL",
         override val serviceId: String,
         val content: Map<String, Int>,
+        override val address: String,
     ) : AddOrderRequest()
 
     data class AddDumplingsDeliveryOrderRequest(
         override val type: String = "DUMPLINGS",
         override val serviceId: String,
         val content: Map<String, Int>,
+        override val address: String,
     ) : AddOrderRequest()
 
     data class AddAltushkaDeliveryOrderRequest(
         override val type: String = "ALTUSHKA",
         override val serviceId: String,
+        override val address: String,
     ) : AddOrderRequest()
 
     data class AddWotOrderRequest(
         override val type: String = "WOT",
         override val serviceId: String,
+        override val address: String,
     ) : AddOrderRequest()
 
     data class AddLaundryRequest(
         override val type: String = "LAUNDRY",
         override val serviceId: String,
+        override val address: String,
     ) : AddOrderRequest()
 }

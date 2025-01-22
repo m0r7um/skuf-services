@@ -20,6 +20,7 @@ class AlcoholDeliveryOrder(
     status: OrderStatus,
     service: ServiceModel,
     user: User,
+    address: String,
 ) : Order(
     comment = comment,
     rating = rating,
@@ -27,4 +28,5 @@ class AlcoholDeliveryOrder(
     service = service,
     user = user,
     totalPrice = totalPrice,
+    address = address,
 )

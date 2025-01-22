@@ -203,6 +203,7 @@
     <div class="success-message" id="success-message">Услуга успешно добавлена!</div>
   </form>
 </div>
+
 <script>
   document.getElementById('service-form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -210,7 +211,7 @@
     const serviceType = document.getElementById('service-type').value;
     const serviceName = document.getElementById('service-name').value;
     const serviceDescription = document.getElementById('service-description').value;
-    const servicePrice = document.getElementById('service-price').value;
+    const servicePrice = document.getElementById('service-price').value.replaceAll(',', '.');
     const errorMessage = document.getElementById('error-message');
     const successMessage = document.getElementById('success-message');
 
@@ -228,6 +229,7 @@
 
       if (response.ok) {
         successMessage.style.display = 'block';
+        window.location.href = 'http://localhost:8080/provider-service'
       } else {
         throw new Error('Ошибка при добавлении услуги');
       }

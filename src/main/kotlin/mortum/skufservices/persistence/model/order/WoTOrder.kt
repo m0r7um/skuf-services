@@ -15,6 +15,7 @@ class WoTOrder(
     service: ServiceModel,
     user: User,
     totalPrice: BigDecimal,
+    address: String,
 ) : Order(
     comment = comment,
     rating = rating,
@@ -22,4 +23,5 @@ class WoTOrder(
     service = service,
     user = user,
     totalPrice = totalPrice,
+    address = address,
 )

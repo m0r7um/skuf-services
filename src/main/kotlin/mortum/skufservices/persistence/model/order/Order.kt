@@ -35,4 +35,6 @@ abstract class Order(
     val user: User,
 
     val totalPrice: BigDecimal,
+
+    val address: String?,
 )

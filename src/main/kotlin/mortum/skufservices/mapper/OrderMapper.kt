@@ -4,6 +4,7 @@ import mortum.skufservices.dto.GetOrderResponse
 import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.dto.UserResponse
 import mortum.skufservices.persistence.model.order.Order
+import mortum.skufservices.persistence.model.user.User
 import org.springframework.stereotype.Component
 
 @Component
@@ -18,6 +19,7 @@ class OrderMapper {
     }
 
     fun mapToGetOrderResponse(order: Order): GetOrderResponse {
+        val provider = order.service.user
         return GetOrderResponse(
             id = order.id,
             type = order.service.type,
@@ -29,7 +31,13 @@ class OrderMapper {
                 login = order.user.login,
                 name = order.user.name,
                 surname = order.user.surname,
-            )
+            ),
+            provider = UserResponse(
+                login = provider.login,
+                name = provider.name,
+                surname = provider.surname,
+            ),
+            address = order.address,
         )
     }
 }

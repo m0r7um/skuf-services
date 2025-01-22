@@ -138,6 +138,7 @@ class OrderService(
             status = OrderStatus.PAYMENT_AWAITING,
             service = serviceEntity,
             user = userEntity,
+            address = order.address,
         )
 
         val orderContent = alcoholEntityToCount.filter { it.second > 0 }.map { (alcohol, count) ->
@@ -166,6 +167,7 @@ class OrderService(
             service = serviceEntity,
             user = userEntity,
             totalPrice = serviceEntity.price,
+            address = addOrderRequest.address,
         )
 
         val savedOrder = woTOrderRepository.save(orderEntity)
@@ -185,6 +187,7 @@ class OrderService(
             service = serviceEntity,
             user = userEntity,
             totalPrice = serviceEntity.price,
+            address = order.address,
         )
 
         val savedOrder = altushkaOrderRepository.save(orderEntity)
@@ -219,7 +222,8 @@ class OrderService(
             status = OrderStatus.PAYMENT_AWAITING,
             service = serviceEntity,
             user = userEntity,
-            content = null
+            content = null,
+            address = order.address,
         )
 
         val orderContent = dumplingsEntityToCount.filter { it.second > 0 }.map { (alcohol, count) ->
@@ -248,6 +252,7 @@ class OrderService(
             service = serviceEntity,
             user = userEntity,
             totalPrice = serviceEntity.price,
+            address = order.address,
         )
 
         val savedOrder = laundryOrderRepository.save(orderEntity)
