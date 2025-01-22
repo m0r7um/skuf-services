@@ -18,6 +18,41 @@
       height: 100vh;
     }
 
+    .header .nav-center {
+      text-align: left;
+      flex-grow: 1;
+      margin-left: 20px;
+    }
+
+    .header .nav-center button {
+      background-color: #0074d9;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .header .nav-center button:hover {
+      background-color: #005baa;
+    }
+
+    .header .logout-button {
+      background-color: #ff0000;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-right: 20px;
+    }
+
+    .header .logout-button:hover {
+      background-color: #cc0000;
+    }
+
     .header {
       position: absolute;
       top: 0;
@@ -132,6 +167,11 @@
 <div class="header">
   <img src="../logo.png" alt="Логотип">
   <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
+  <div class="nav-center">
+    <button onclick="window.location.href='http://localhost:8080/provider-order';">Мои заказы</button>
+    <button onclick="window.location.href='http://localhost:8080/provider-service';">Мои услуги</button>
+  </div>
+  <button class="logout-button" onclick="logout()">Выйти</button>
 </div>
 <div class="service-container">
   <h1>Добавить Услугу</h1>
@@ -139,10 +179,11 @@
     <div class="input-group">
       <label for="service-type">Тип услуги</label>
       <select id="service-type" name="service-type" required>
-        <option value="">Выберите тип</option>
+        <option value="ALCOHOL">Доставка алкоголя</option>
+        <option value="LAUNDRY">Прачка</option>
+        <option value="WOT">Тиммейт WoT</option>
         <option value="ALTUSHKA">Альтушка на дом</option>
-        <option value="ALCOHOL">Алкоголь</option>
-        <option value="DUMPLINGS">Пельмени</option>
+        <option value="DUMPLINGS">Доставка пельменей</option>
       </select>
     </div>
     <div class="input-group">
@@ -201,6 +242,11 @@
             .replace(/[^0-9.,]/g, '') // Разрешить только цифры, точки и запятые
             .replace(/([.,]).*?([.,])/g, '$1'); // Исключить повторные точки и запятые
   });
+
+  function logout() {
+    document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    window.location.href = "http://localhost:8080/login";
+  }
 </script>
 </body>
 </html>
