@@ -140,9 +140,9 @@
       <label for="service-type">Тип услуги</label>
       <select id="service-type" name="service-type" required>
         <option value="">Выберите тип</option>
-        <option value="consulting">Консультация</option>
-        <option value="repair">Ремонт</option>
-        <option value="delivery">Доставка</option>
+        <option value="ALTUSHKA">Альтушка на дом</option>
+        <option value="ALCOHOL">Алкоголь</option>
+        <option value="DUMPLINGS">Пельмени</option>
       </select>
     </div>
     <div class="input-group">
@@ -177,12 +177,12 @@
     successMessage.style.display = 'none';
 
     try {
-      const response = await fetch('http://localhost:8080/service/add', {
+      const response = await fetch('http://localhost:8080/service', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ serviceType, serviceName, serviceDescription, servicePrice })
+        body: JSON.stringify({type: serviceType, title: serviceName, description: serviceDescription, price: servicePrice })
       });
 
       if (response.ok) {

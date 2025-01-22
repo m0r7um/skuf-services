@@ -1,5 +1,6 @@
 package mortum.skufservices.controller
 
+import mortum.skufservices.dto.CreateServiceRequest
 import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.dto.UpdateServiceRequest
 import mortum.skufservices.dto.PageWrapper
@@ -38,5 +39,10 @@ class ServiceController(
     @PutMapping("/{id}")
     fun updateServiceById(@PathVariable id: String, @RequestBody service: UpdateServiceRequest): GetServiceResponse {
         return serviceModelService.updateServiceById(id, service)
+    }
+
+    @PostMapping
+    fun updateServiceById(@RequestBody service: CreateServiceRequest): GetServiceResponse {
+        return serviceModelService.createService(service)
     }
 }

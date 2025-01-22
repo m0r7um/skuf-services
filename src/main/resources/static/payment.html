@@ -892,6 +892,7 @@
                     $form.classList.add('binking__hide')
                     $success.classList.remove('binking__hide')
                     $submitButton.classList.remove('binking__loading')
+                    window.location.href = 'http://localhost:8080/provider-order'
                 } else {
                     var bankInfo = selectedCardIndex !== null ? savedCardsBanks[selectedCardIndex] : newCardInfo || null
                     $error.innerHTML = bankInfo && bankInfo.bankPhone ?
@@ -899,7 +900,7 @@
                         'Ваш банк отклонил транзакцию по указанной карте.'
                     $error.classList.remove('binking__hide')
                 }
-            }, 1000)
+            }, 3000)
         }
 
         function resetButtonClickHandler() {

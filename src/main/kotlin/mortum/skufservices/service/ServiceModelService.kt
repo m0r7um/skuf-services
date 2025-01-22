@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
+import mortum.skufservices.dto.CreateServiceRequest
 import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.dto.UpdateServiceRequest
 import mortum.skufservices.dto.PageWrapper
@@ -11,6 +12,7 @@ import mortum.skufservices.mapper.ServiceMapper
 import mortum.skufservices.persistence.model.service.ServiceModel
 import mortum.skufservices.persistence.model.service.ServiceType
 import mortum.skufservices.persistence.repository.service.ServiceRepository
+import mortum.skufservices.persistence.repository.user.UserRepository
 import mortum.skufservices.utils.CommonUtils
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -22,6 +24,7 @@ class ServiceModelService(
     val serviceMapper: ServiceMapper,
     val entityManager: EntityManager,
     val serviceRepository: ServiceRepository,
+    val userRepository: UserRepository,
 ) {
 
     fun getAll(page: Int, search: String?, type: List<ServiceType>?): PageWrapper<GetServiceResponse> {
@@ -62,6 +65,7 @@ class ServiceModelService(
     fun getById(id: String): GetServiceResponse? {
         return serviceRepository.findByIdOrNull(id)?.let { serviceMapper.mapToGetServiceResponse(it) }
     }
+
     fun updateServiceById(id: String, request: UpdateServiceRequest): GetServiceResponse {
         val serviceEntity = serviceRepository.findByIdOrNull(id) ?: throw RuntimeException("Service with id $id not found")
         serviceEntity.title = request.title
@@ -70,6 +74,17 @@ class ServiceModelService(
         serviceEntity.description = request.description
         serviceRepository.save(serviceEntity)
         return serviceMapper.mapToGetServiceResponse(serviceEntity)
+    }
+
+    fun createService(request: CreateServiceRequest): GetServiceResponse {
+        val userId = CommonUtils.getUserIdFromSecurityContext()
+        val user = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User with id $userId not found")
+        val service = serviceMapper.mapToServiceModel(
+            user = user,
+            request = request
+        )
+        serviceRepository.save(service)
+        return serviceMapper.mapToGetServiceResponse(service)
     }
 
     private fun generatePredicates(

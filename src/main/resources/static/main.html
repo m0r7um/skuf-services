@@ -273,6 +273,8 @@
             return button;
         };
 
+        if (totalPage === 0) return
+
         // Кнопка первой страницы
         paginationContainer.appendChild(createButton(1, currentPage === 1));
 

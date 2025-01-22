@@ -24,7 +24,7 @@ class ServiceModel(
 
     @OneToMany
     @JoinColumn(name = "service_id")
-    val orders: List<Order>,
+    val orders: List<Order> = emptyList(),
 
     @ManyToOne
     val user: User,

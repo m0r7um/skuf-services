@@ -207,11 +207,22 @@
       if (response.ok) {
         successMessage.style.display = 'block';
         const data = await response.json();
-        document.cookie = `Authorization=${data.token};` // Сохранение токена
-        window.location.href = 'http://localhost:8080/main'
+        const cookieName = 'Authorization';
+        const token = data.token;
+        const maxAge = 60 * 60 * 24 * 7; // Срок действия куки (например, 7 дней)
+
+        // Удаляем старую куку
+        document.cookie = `${cookieName}=;path=/;max-age=-1`;
+
+        // Устанавливаем новую куку
+        document.cookie = `${cookieName}=${token};path=/;max-age=${maxAge};SameSite=Lax`;
+
+        alert(`Куки установлены: ${document.cookie}`); // Проверка установки куки
+        window.location.href = 'http://localhost:8080/main';
       } else {
         throw new Error('Ошибка регистрации');
       }
+
     } catch (error) {
       errorMessage.textContent = error.message;
       errorMessage.style.display = 'block';
