@@ -354,8 +354,8 @@
                     `;
                     card.dataset.id = item.id;
                     card.addEventListener('click', () => {
-                        const id = card.dataset.id; // Получаем ID из data-id
-                        window.location.href = `http://localhost:8080/user/order?id=${id}`;
+                        const id = card.dataset.id;
+                        window.location.href = `http://localhost:8080/provider/order?id=${id}`;
                     });
 
                     cardsContainer.appendChild(card);
