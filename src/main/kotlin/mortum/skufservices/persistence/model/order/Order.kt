@@ -26,7 +26,7 @@ abstract class Order(
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
-    val status: OrderStatus,
+    var status: OrderStatus,
 
     @ManyToOne
     val service: ServiceModel,

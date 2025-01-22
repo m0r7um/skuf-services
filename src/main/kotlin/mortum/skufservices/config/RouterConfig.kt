@@ -24,6 +24,7 @@ class RouterConfig {
         val payment = ClassPathResource("static/payment.html")
         val addService = ClassPathResource("static/add-service.html")
         val editService = ClassPathResource("static/edit-service.html")
+        val notFound = ClassPathResource("static/404.html")
         return route()
             .resource(path("/login"), login)
             .resource(path("/user/signup"), registerUser)
@@ -36,6 +37,7 @@ class RouterConfig {
             .resource(path("/payment"), payment)
             .resource(path("/service/add"), addService)
             .resource(path("/service/edit"), editService)
+            .resource(path("/404"), notFound)
             .build()
     }
 }

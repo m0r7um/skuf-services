@@ -1,8 +1,9 @@
 package mortum.skufservices.controller
 
 import mortum.skufservices.dto.GetOrderResponse
-import mortum.skufservices.dto.GetServiceResponse
 import mortum.skufservices.dto.PageWrapper
+import mortum.skufservices.dto.SetStatusRequest
+import mortum.skufservices.dto.SetStatusResponse
 import mortum.skufservices.dto.order.AddOrderRequest
 import mortum.skufservices.dto.order.AddOrderResponse
 import mortum.skufservices.persistence.model.order.OrderStatus
@@ -33,7 +34,12 @@ class OrderController(
     }
 
     @GetMapping("/{id}")
-    fun getServiceById(@PathVariable id: String): GetOrderResponse? {
+    fun getOrderById(@PathVariable id: String): GetOrderResponse? {
         return orderService.getById(id)
+    }
+
+    @PatchMapping("setStatus/{id}")
+    fun setOrderStatusById(@PathVariable id: String, request: SetStatusRequest): SetStatusResponse {
+        return orderService.updateStatusById(id, request)
     }
 }

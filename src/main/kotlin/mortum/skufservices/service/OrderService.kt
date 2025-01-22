@@ -4,11 +4,10 @@ import jakarta.persistence.EntityManager
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
-import mortum.skufservices.dto.GetOrderResponse
-import mortum.skufservices.dto.GetServiceResponse
-import mortum.skufservices.dto.PageWrapper
+import mortum.skufservices.dto.*
 import mortum.skufservices.dto.order.AddOrderRequest
 import mortum.skufservices.dto.order.AddOrderResponse
+import mortum.skufservices.exceptions.InvalidOrderStatusException
 import mortum.skufservices.mapper.OrderMapper
 import mortum.skufservices.persistence.model.order.*
 import mortum.skufservices.persistence.model.user.User
@@ -89,6 +88,23 @@ class OrderService(
 
     fun getById(id: String): GetOrderResponse? {
         return orderRepository.findByIdOrNull(id)?.let { orderMapper.mapToGetOrderResponse(it) }
+    }
+
+    fun updateStatusById(id: String, request: SetStatusRequest): SetStatusResponse {
+        val order = orderRepository.findByIdOrNull(id) ?: throw RuntimeException("Order not found")
+        val newStatus = request.status
+        val currentStatus = order.status
+        val statusValidationResult = validateStatus(currentStatus, newStatus)
+        if (statusValidationResult) {
+            order.status = newStatus
+        } else {
+            throw InvalidOrderStatusException("Нельзя установить статус $newStatus после $currentStatus")
+        }
+        return SetStatusResponse(newStatus)
+    }
+
+    private fun validateStatus(currentStatus: OrderStatus, newStatus: OrderStatus): Boolean {
+        return (newStatus.ordinal - currentStatus.ordinal == 1) || newStatus == OrderStatus.CANCELLED
     }
 
     private fun addAlcoholDeliveryOrder(order: AddOrderRequest.AddAlcoholDeliveryOrderRequest): AddOrderResponse {

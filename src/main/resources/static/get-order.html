@@ -309,6 +309,7 @@
             document.getElementById('service-status').textContent = order.status || 'Без названия'
             document.getElementById('service-price').textContent = order.totalPrice ? `Стоимость: ${order.totalPrice} ₽` : 'Стоимость: Не указана';
         } catch (error) {
+            // TODO переделать на сообщение
             alert(error.message);
         }
     }
@@ -448,6 +449,7 @@
                 window.location.href = 'http://localhost:8080/payment'
             })
             .catch(error => {
+                // TODO убрать алерт
                 alert('Ошибка при оформлении заказа');
             });
     }

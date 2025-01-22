@@ -18,7 +18,7 @@ class ErrorController : ErrorController {
         val statusCode = Integer.valueOf(status.toString())
 
         if (statusCode == HttpStatus.NOT_FOUND.value()) {
-            response.sendRedirect("/login")
+            response.sendRedirect("/404")
         }/* else if (statusCode == HttpStatus.UNAUTHORIZED.value()) {
             response.sendRedirect("/login")
         }*/

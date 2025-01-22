@@ -25,6 +25,40 @@
             margin-bottom: 20px;
         }
 
+        .header .nav-center {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .header .nav-center button {
+            background-color: #0074d9;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .header .nav-center button:hover {
+            background-color: #005baa;
+        }
+
+        .header .logout-button {
+            background-color: #ff0000;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        .header .logout-button:hover {
+            background-color: #cc0000;
+        }
+
         .header img {
             height: 40px;
             margin-right: 10px;
@@ -222,6 +256,10 @@
 <div class="header">
     <img src="logo.png" alt="Логотип">
     <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
+    <div class="nav-center">
+        <button onclick="window.location.href='http://localhost:8080/user/orders';">Мои заказы</button>
+    </div>
+    <button class="logout-button" onclick="logout()">Выйти</button>
 </div>
 
 <div class="search-bar">
@@ -370,6 +408,11 @@
     }
 
     document.querySelector('.search-bar button').addEventListener('click', () => fetchAndRenderCards());
+
+    function logout() {
+        document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+        window.location.href = "http://localhost:8080/login";
+    }
 
     // Выполнить запрос при загрузке страницы
     window.addEventListener('DOMContentLoaded', () => fetchAndRenderCards());

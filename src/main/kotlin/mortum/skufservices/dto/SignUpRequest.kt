@@ -1,6 +1,5 @@
 package mortum.skufservices.dto
 
-import java.time.Instant
 import java.util.*
 
 data class SignUpRequest(

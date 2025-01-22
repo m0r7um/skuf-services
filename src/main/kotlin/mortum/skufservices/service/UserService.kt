@@ -1,6 +1,6 @@
 package mortum.skufservices.service
 
-import mortum.skufservices.UsernameAlreadyExistsException
+import mortum.skufservices.exceptions.UsernameAlreadyExistsException
 import mortum.skufservices.dto.RoleDto
 import mortum.skufservices.persistence.model.user.RoleEnum
 import mortum.skufservices.persistence.model.user.User
