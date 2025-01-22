@@ -74,7 +74,11 @@ class WebSecurityConfig(
                 auth.requestMatchers("/user/signup").permitAll()
                 auth.requestMatchers("/provider/signup").permitAll()
                 auth.requestMatchers("/main").hasRole("USER")
+                auth.requestMatchers("/user-orders").hasRole("USER")
+                auth.requestMatchers("/user/order").hasRole("USER")
                 auth.requestMatchers("/service/add").hasRole("PROVIDER")
+                auth.requestMatchers("/provider-order").hasRole("PROVIDER")
+                auth.requestMatchers("/provider/order").hasRole("PROVIDER")
 
                 .anyRequest().permitAll()
             }

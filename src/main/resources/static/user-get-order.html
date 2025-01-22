@@ -135,6 +135,29 @@
             box-sizing: border-box;
         }
 
+        .status-buttons {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .button-red {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: 'Rubik', Arial, sans-serif;
+            text-align: center;
+            text-decoration: none;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+
         .button:hover {
             background-color: #003f7d;
         }
@@ -281,6 +304,10 @@
             <p class="card-text"><strong>Статус заказа:</strong> <span id="service-status">Нет указан</span></p>
             <p class="card-price" id="service-price">Стоимость: Не указана</p>
         </div>
+        <div class="status-buttons">
+            <button class="button-red" onclick="changeStatus('CANCELLED')">Отменить</button>
+            <button class="button" id="statusButton" onclick="redirectToPayment()">Оплатить</button>
+        </div>
         <div class="card-footer">
             <button class="back-button" onclick="goBack()">Назад</button>
         </div>
@@ -288,6 +315,37 @@
 </div>
 
 <script>
+    function changeStatus(newStatus) {
+        const id = new URLSearchParams(window.location.search).get('id');
+        const url = `http://localhost:8080/orders/setStatus/${id}`;
+
+        fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const status = data.status;
+                const statusButton = document.getElementById('statusButton');
+                document.getElementById('service-status').textContent = status || 'Без названия'
+
+                if (status === 'PAYMENT_AWAITING') {}
+                else {
+                    document.querySelector('.status-buttons').style.display = 'none';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function redirectToPayment() {
+        const id = new URLSearchParams(window.location.search).get('id');
+        window.location.href = `http://localhost:8080/payment/${id}`;
+
+    }
+
     async function fetchServiceDetails() {
         const serviceId = new URLSearchParams(window.location.search).get('id');
         if (!serviceId) {
@@ -302,12 +360,20 @@
             }
 
             const order = await response.json();
+            const status = order.status;
             document.getElementById('service-name').textContent = order.title || 'Без названия';
             document.getElementById('service-type').textContent = order.type || 'Не указан';
             document.getElementById('service-description').textContent = order.description || 'Нет описания';
             document.getElementById('service-provider').textContent = `${order.user.name} ${order.user.surname} (${order.user.login})` || 'Нет описания';
-            document.getElementById('service-status').textContent = order.status || 'Без названия'
+            document.getElementById('service-status').textContent = status || 'Без названия'
             document.getElementById('service-price').textContent = order.totalPrice ? `Стоимость: ${order.totalPrice} ₽` : 'Стоимость: Не указана';
+
+            document.getElementById('service-status').textContent = status || 'Без названия'
+            if (status === 'PAYMENT_AWAITING') {}
+            else {
+                document.querySelector('.status-buttons').style.display = 'true';
+            }
+
         } catch (error) {
             // TODO переделать на сообщение
             alert(error.message);
