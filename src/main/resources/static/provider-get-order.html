@@ -123,11 +123,25 @@
 
         .status-buttons {
             padding: 15px;
-            border-top: 1px solid #ddd;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+        }
+
+        .button-red {
+            display: inline-block;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            font-family: 'Rubik', Arial, sans-serif;
+            text-align: center;
+            text-decoration: none;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box;
         }
 
         .button {
@@ -292,8 +306,8 @@
             <p class="card-price" id="service-price">Стоимость: Не указана</p>
         </div>
         <div class="status-buttons">
-            <button class="button" onclick="callBackend()">Кнопка 1</button>
-            <button class="button" onclick="callBackend()">Кнопка 2</button>
+            <button class="button-red" onclick="changeStatus('CANCELLED')">Отклонить</button>
+            <button class="button" id="statusButton" onclick="changeStatus('IN_PROGRESS')">Взять в работу</button>
         </div>
         <div class="card-footer">
             <button class="back-button" onclick="goBack()">Назад</button>
@@ -301,16 +315,33 @@
     </div>
 </div>
 <script>
-    function callBackend() {
-        fetch('/backend-endpoint', {
-            method: 'POST',
+    function changeStatus(newStatus) {
+        const id = new URLSearchParams(window.location.search).get('id');
+        const url = `http://localhost:8080/orders/setStatus/${id}`;
+
+        fetch(url, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ action: 'buttonClicked' })
+            body: JSON.stringify({ status: newStatus })
         })
             .then(response => response.json())
-            .then(data => console.log(data))
+            .then(data => {
+                const status = data.status;
+                const statusButton = document.getElementById('statusButton');
+                document.getElementById('service-status').textContent = status || 'Без названия'
+
+                if (status === 'CANCELLED' || status === 'PAYMENT_AWAITING' || status === 'COMPLETED') {
+                    document.querySelector('.status-buttons').style.display = 'none';
+                } else if (status === 'AWAITING_CONFIRMATION') {
+                    statusButton.textContent = 'Взять в работу';
+                    statusButton.onclick = () => changeStatus('IN_PROGRESS');
+                } else if (status === 'IN_PROGRESS') {
+                    statusButton.textContent = 'Завершить заказ';
+                    statusButton.onclick = () => changeStatus('COMPLETED');
+                }
+            })
             .catch(error => console.error('Error:', error));
     }
 
@@ -328,12 +359,24 @@
             }
 
             const order = await response.json();
+            const status = order.status;
+            const statusButton = document.getElementById('statusButton');
             document.getElementById('service-name').textContent = order.title || 'Без названия';
             document.getElementById('service-type').textContent = order.type || 'Не указан';
             document.getElementById('service-description').textContent = order.description || 'Нет описания';
             document.getElementById('service-provider').textContent = `${order.user.name} ${order.user.surname} (${order.user.login})` || 'Нет описания';
-            document.getElementById('service-status').textContent = order.status || 'Без названия'
+            document.getElementById('service-status').textContent = status || 'Без названия'
             document.getElementById('service-price').textContent = order.totalPrice ? `Стоимость: ${order.totalPrice} ₽` : 'Стоимость: Не указана';
+
+            if (status === 'CANCELLED' || status === 'PAYMENT_AWAITING' || status === 'COMPLETED') {
+                document.querySelector('.status-buttons').style.display = 'none';
+            } else if (status === 'AWAITING_CONFIRMATION') {
+                statusButton.textContent = 'Взять в работу';
+                statusButton.onclick = () => changeStatus('IN_PROGRESS');
+            } else if (status === 'IN_PROGRESS') {
+                statusButton.textContent = 'Завершить заказ';
+                statusButton.onclick = () => changeStatus('COMPLETED');
+            }
         } catch (error) {
             alert(error.message);
         }

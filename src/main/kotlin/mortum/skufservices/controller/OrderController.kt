@@ -37,7 +37,7 @@ class OrderController(
         return orderService.getById(id)
     }
 
-    @PatchMapping("setStatus/{id}")
+    @PatchMapping("/setStatus/{id}")
     fun setOrderStatusById(@PathVariable id: String, @RequestBody request: SetStatusRequest): SetStatusResponse {
         return orderService.updateStatusById(id, request)
     }
