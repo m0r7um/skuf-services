@@ -880,7 +880,7 @@
             $monthField.disabled = true
             $yearField.disabled = true
             $codeField.disabled = true
-            setTimeout(function () {
+            setTimeout(async function () {
                 sending = false
                 $submitButton.classList.remove('binking__loading')
                 $submitButton.disabled = false
@@ -889,10 +889,27 @@
                 $yearField.disabled = false
                 $codeField.disabled = false
                 if (selectedCardIndex === null && $codeField.value === '777') {
-                    $form.classList.add('binking__hide')
-                    $success.classList.remove('binking__hide')
-                    $submitButton.classList.remove('binking__loading')
-                    window.location.href = 'http://localhost:8080/provider-order'
+                    const orderId = new URLSearchParams(window.location.search).get('id');
+                    await fetch(`http://localhost:8080/orders/setStatus/${orderId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({status: "AWAITING_CONFIRMATION"})
+                    }).then(async data => {
+                            if (!data.ok) {
+                                const json = await data.json()
+                                $error.innerHTML = json.message
+                                $error.classList.remove('binking__hide')
+                            } else {
+                                $form.classList.add('binking__hide')
+                                $success.classList.remove('binking__hide')
+                                $submitButton.classList.remove('binking__loading')
+                            }
+
+                            setTimeout(() => window.location.href = 'http://localhost:8080/provider-order', 3000)
+                        }
+                    );
                 } else {
                     var bankInfo = selectedCardIndex !== null ? savedCardsBanks[selectedCardIndex] : newCardInfo || null
                     $error.innerHTML = bankInfo && bankInfo.bankPhone ?

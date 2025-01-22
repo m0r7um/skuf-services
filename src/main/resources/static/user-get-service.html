@@ -481,7 +481,8 @@
         })
             .then(response => response.json())
             .then(data => {
-                window.location.href = "http://localhost:8080/payment"
+                const orderId = data.id
+                window.location.href = `http://localhost:8080/payment?id=${orderId}`
             })
             .catch(error => {
                 alert('Ошибка при оформлении заказа');
@@ -501,7 +502,8 @@
         })
             .then(response => response.json())
             .then(data => {
-                window.location.href = 'http://localhost:8080/payment'
+                const orderId = data.id
+                window.location.href = `http://localhost:8080/payment?id=${orderId}`
             })
             .catch(error => {
                 alert('Ошибка при оформлении заказа');

@@ -249,28 +249,6 @@ CREATE TRIGGER trigger_check_order_status_for_rating
     WHEN (NEW.rating IS DISTINCT FROM OLD.rating) -- Ограничиваем вызов только изменением поля rating
 EXECUTE FUNCTION check_order_status_for_rating();
 
-
-
-
-
-
-
-
-CREATE OR REPLACE FUNCTION check_order_time()
-    RETURNS TRIGGER AS $$
-BEGIN
-    IF CURRENT_TIME >= '22:00:00' THEN
-        RAISE EXCEPTION 'Orders cannot be placed after 10 PM';
-END IF;
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER before_order_time_check
-    BEFORE INSERT OR UPDATE ON orders
-                         FOR EACH ROW
-                         EXECUTE FUNCTION check_order_time();
-
 -- Создаем функцию, которая будет выполнять проверку
 CREATE OR REPLACE FUNCTION check_alcohol_order()
     RETURNS TRIGGER AS $$
