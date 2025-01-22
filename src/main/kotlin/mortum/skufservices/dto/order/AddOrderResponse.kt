@@ -1,4 +1,5 @@
 package mortum.skufservices.dto.order
 
-class AddOrderResponse {
-}
+data class AddOrderResponse(
+    val id: String,
+)

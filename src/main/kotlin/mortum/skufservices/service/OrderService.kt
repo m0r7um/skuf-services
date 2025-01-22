@@ -97,6 +97,7 @@ class OrderService(
         val statusValidationResult = validateStatus(currentStatus, newStatus)
         if (statusValidationResult) {
             order.status = newStatus
+            orderRepository.save(order)
         } else {
             throw InvalidOrderStatusException("Нельзя установить статус $newStatus после $currentStatus")
         }
@@ -147,10 +148,10 @@ class OrderService(
             )
         }
 
-        alcoholDeliveryOrderRepository.save(orderEntity)
+        val savedOrderEntity = alcoholDeliveryOrderRepository.save(orderEntity)
         alcoholDeliveryOrderContentRepository.saveAll(orderContent)
 
-        return AddOrderResponse()
+        return AddOrderResponse(savedOrderEntity.id)
     }
 
     private fun addWotOrder(addOrderRequest: AddOrderRequest.AddWotOrderRequest): AddOrderResponse {
@@ -167,9 +168,9 @@ class OrderService(
             totalPrice = serviceEntity.price,
         )
 
-        woTOrderRepository.save(orderEntity)
+        val savedOrder = woTOrderRepository.save(orderEntity)
 
-        return AddOrderResponse()
+        return AddOrderResponse(savedOrder.id)
     }
 
     private fun addAltushkaDeliveryOrder(order: AddOrderRequest.AddAltushkaDeliveryOrderRequest): AddOrderResponse {
@@ -186,9 +187,9 @@ class OrderService(
             totalPrice = serviceEntity.price,
         )
 
-        altushkaOrderRepository.save(orderEntity)
+        val savedOrder = altushkaOrderRepository.save(orderEntity)
 
-        return AddOrderResponse()
+        return AddOrderResponse(savedOrder.id)
     }
 
     private fun addDumplingsDeliveryOrderRequest(order: AddOrderRequest.AddDumplingsDeliveryOrderRequest): AddOrderResponse {
@@ -229,10 +230,10 @@ class OrderService(
             )
         }
 
-        dumplingsDeliveryOrderRepository.save(orderEntity)
+        val savedOrder = dumplingsDeliveryOrderRepository.save(orderEntity)
         dumplingsDeliveryOrderContentRepository.saveAll(orderContent)
 
-        return AddOrderResponse()
+        return AddOrderResponse(savedOrder.id)
     }
 
     private fun addLaundryOrder(order: AddOrderRequest.AddLaundryRequest): AddOrderResponse {
@@ -249,9 +250,9 @@ class OrderService(
             totalPrice = serviceEntity.price,
         )
 
-        laundryOrderRepository.save(orderEntity)
+        val savedOrder = laundryOrderRepository.save(orderEntity)
 
-        return AddOrderResponse()
+        return AddOrderResponse(savedOrder.id)
     }
 
     private fun getUserEntity(): User {

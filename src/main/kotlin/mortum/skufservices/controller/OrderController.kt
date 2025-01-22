@@ -29,8 +29,7 @@ class OrderController(
     @PostMapping
     @PreAuthorize(value = "hasRole('USER')")
     fun addOrder(@RequestBody addOrderRequest: AddOrderRequest): AddOrderResponse {
-        orderService.addOrder(addOrderRequest)
-        return AddOrderResponse()
+        return orderService.addOrder(addOrderRequest)
     }
 
     @GetMapping("/{id}")
@@ -39,7 +38,7 @@ class OrderController(
     }
 
     @PatchMapping("setStatus/{id}")
-    fun setOrderStatusById(@PathVariable id: String, request: SetStatusRequest): SetStatusResponse {
+    fun setOrderStatusById(@PathVariable id: String, @RequestBody request: SetStatusRequest): SetStatusResponse {
         return orderService.updateStatusById(id, request)
     }
 }
