@@ -26,6 +26,15 @@ class OrderController(
         return orderService.getAll(page, search, status)
     }
 
+    @GetMapping("provider")
+    fun getAllForProvider(
+        @RequestParam("search") search: String?,
+        @RequestParam("status") status: List<OrderStatus>?,
+        @RequestParam("page") page: Int,
+    ): PageWrapper<GetOrderResponse> {
+        return orderService.getAllForProvider(page, search, status)
+    }
+
     @PostMapping
     @PreAuthorize(value = "hasRole('USER')")
     fun addOrder(@RequestBody addOrderRequest: AddOrderRequest): AddOrderResponse {

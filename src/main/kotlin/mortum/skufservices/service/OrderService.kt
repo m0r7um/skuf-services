@@ -50,13 +50,31 @@ class OrderService(
 
         val countQuery = builder.createQuery(Long::class.java)
         var root = countQuery.from(Order::class.java)
-        var predicates = generatePredicates(builder, root, search, status, userId)
+        var predicates = generatePredicates(builder, root, search, status, userId, null)
         countQuery.select(builder.count(root)).where(*predicates)
         val countPage = ceil(entityManager.createQuery(countQuery).singleResult / PAGE_SIZE.toDouble()).toInt()
 
         val criteriaQuery = builder.createQuery(Order::class.java)
         root = criteriaQuery.from(Order::class.java)
-        predicates = generatePredicates(builder, root, search, status, userId)
+        predicates = generatePredicates(builder, root, search, status, userId, null)
+        val select = criteriaQuery.select(root).where() .where(*predicates)
+        val orders = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
+        return orderMapper.mapToPageOrderResponse(orders, page, countPage)
+    }
+
+    fun getAllForProvider(page: Int, search: String?, status: List<OrderStatus>?): PageWrapper<GetOrderResponse> {
+        val builder = entityManager.criteriaBuilder
+        val providerId = CommonUtils.getUserIdFromSecurityContext()
+
+        val countQuery = builder.createQuery(Long::class.java)
+        var root = countQuery.from(Order::class.java)
+        var predicates = generatePredicates(builder, root, search, status, null, providerId)
+        countQuery.select(builder.count(root)).where(*predicates)
+        val countPage = ceil(entityManager.createQuery(countQuery).singleResult / PAGE_SIZE.toDouble()).toInt()
+
+        val criteriaQuery = builder.createQuery(Order::class.java)
+        root = criteriaQuery.from(Order::class.java)
+        predicates = generatePredicates(builder, root, search, status, null, providerId)
         val select = criteriaQuery.select(root).where() .where(*predicates)
         val orders = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
         return orderMapper.mapToPageOrderResponse(orders, page, countPage)
@@ -284,6 +302,7 @@ class OrderService(
         search: String?,
         status: List<OrderStatus>?,
         userId: String?,
+        providerId: String?,
     ): Array<Predicate> {
         val predicates = mutableListOf<Predicate?>()
         if (search != null) {
@@ -299,7 +318,10 @@ class OrderService(
             val predicateUserId = builder.equal(root.get<String>("user").get<String>("id"), userId)
             predicates.add(predicateUserId)
         }
-
+        if (providerId != null) {
+            val predicateProviderId = builder.equal(root.get<String>("service").get<String>("user").get<String>("id"), providerId)
+            predicates.add(predicateProviderId)
+        }
         return predicates.requireNoNulls().toTypedArray()
     }
 }

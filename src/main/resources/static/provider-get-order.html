@@ -302,6 +302,8 @@
             <p class="card-text"><strong>Тип заказа:</strong> <span id="service-type">Не указан</span></p>
             <p class="card-text"><strong>Описание:</strong> <span id="service-description">Нет описания</span></p>
             <p class="card-text"><strong>Исполнитель:</strong> <span id="service-provider">Нет указан</span></p>
+            <p class="card-text"><strong>Заказчик:</strong> <span id="service-user">Не указан</span></p>
+            <p class="card-text"><strong>Адрес заказа:</strong> <span id="service-address">Не указан</span></p>
             <p class="card-text"><strong>Статус заказа:</strong> <span id="service-status">Нет указан</span></p>
             <p class="card-price" id="service-price">Стоимость: Не указана</p>
         </div>
@@ -364,7 +366,9 @@
             document.getElementById('service-name').textContent = order.title || 'Без названия';
             document.getElementById('service-type').textContent = order.type || 'Не указан';
             document.getElementById('service-description').textContent = order.description || 'Нет описания';
-            document.getElementById('service-provider').textContent = `${order.user.name} ${order.user.surname} (${order.user.login})` || 'Нет описания';
+            document.getElementById('service-provider').textContent = `${order.provider.name} ${order.provider.surname} (${order.provider.login})` || 'Нет описания';
+            document.getElementById('service-user').textContent = `${order.user.name} ${order.user.surname} (${order.user.login})` || 'Нет описания';
+            document.getElementById('service-address').textContent = order.address || 'Нет адреса';
             document.getElementById('service-status').textContent = status || 'Без названия'
             document.getElementById('service-price').textContent = order.totalPrice ? `Стоимость: ${order.totalPrice} ₽` : 'Стоимость: Не указана';
 

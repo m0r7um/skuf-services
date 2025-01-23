@@ -355,7 +355,7 @@
 
     function fetchAndRenderCards(page = 1) {
         const input = document.querySelector('.search-bar input').value;
-        const url = new URL('http://localhost:8080/orders');
+        const url = new URL('http://localhost:8080/orders/provider');
 
         url.searchParams.append('search', input);
         url.searchParams.append('page', page);
