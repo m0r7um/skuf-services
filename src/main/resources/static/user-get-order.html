@@ -391,7 +391,7 @@
     async function fetchServiceDetails() {
         const serviceId = new URLSearchParams(window.location.search).get('id');
         if (!serviceId) {
-            alert('Идентификатор услуги не указан');
+            console.log('Идентификатор услуги не указан');
             return;
         }
 
@@ -420,7 +420,7 @@
 
         } catch (error) {
             // TODO переделать на сообщение
-            alert(error.message);
+            console.log(error.message);
         }
     }
 
@@ -537,7 +537,7 @@
                 }
             });
         } catch (error) {
-            alert(error.message);
+            console.log(error.message);
         }
     }
     function hideOverlay() {
@@ -560,7 +560,7 @@
             })
             .catch(error => {
                 // TODO убрать алерт
-                alert('Ошибка при оформлении заказа');
+                console.log('Ошибка при оформлении заказа');
             });
     }
 

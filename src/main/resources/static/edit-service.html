@@ -248,7 +248,7 @@
   async function fetchServiceDetails() {
     const serviceId = new URLSearchParams(window.location.search).get('id');
     if (!serviceId) {
-      alert('Идентификатор услуги не указан');
+      console.log('Идентификатор услуги не указан');
       return;
     }
 
@@ -264,7 +264,7 @@
       document.getElementById('service-description').value = service.description || '';
       document.getElementById('service-price').value = service.price || 0;
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   }
 
@@ -300,7 +300,7 @@
       }
       window.location.href = 'http://localhost:8080/provider-service'
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   }
 
