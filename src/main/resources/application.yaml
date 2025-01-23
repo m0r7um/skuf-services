@@ -13,7 +13,7 @@ spring:
             non_contextual_creation: true
     hibernate:
       ddl-auto:
-    show-sql: true
+    show-sql: false
 server:
   error:
     whitelabel:

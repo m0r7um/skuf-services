@@ -71,7 +71,6 @@ class OrderService(
         var predicates = generatePredicates(builder, root, search, status, null, providerId)
         countQuery.select(builder.count(root)).where(*predicates)
         val countPage = ceil(entityManager.createQuery(countQuery).singleResult / PAGE_SIZE.toDouble()).toInt()
-
         val criteriaQuery = builder.createQuery(Order::class.java)
         root = criteriaQuery.from(Order::class.java)
         predicates = generatePredicates(builder, root, search, status, null, providerId)
