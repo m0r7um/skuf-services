@@ -1,6 +1,7 @@
 package mortum.skufservices.service
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.MediaType
@@ -29,11 +30,19 @@ class YandexMapsService(
             .encode()
             .build()
             .toUri()
+
+        logger.info("GET $uri")
+        logger.info("Query $query")
+
         return restClient.get()
             .uri(uri)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .body(object : ParameterizedTypeReference<Map<String, Any>>() {})
             ?: throw RuntimeException("Empty body yandes maps")
+    }
+
+    private companion object {
+        private val logger = LoggerFactory.getLogger(YandexMapsService::class.java)
     }
 }
