@@ -1,5 +1,6 @@
 package mortum.skufservices.service
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.MediaType
@@ -13,6 +14,8 @@ class YandexMapsService(
     private val apiKey: String,
     private val restClient: RestClient,
 ) {
+
+    @CircuitBreaker(name = "yandex-maps")
     fun getAddressSuggestions(query: String): Map<String, Any> {
         // https://suggest-maps.yandex.ru/v1/suggest?apikey=${apiKey}&text=${encodeURIComponent(query)}&lang=ru&results=5
         val uri = UriComponentsBuilder
