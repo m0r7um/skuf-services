@@ -143,7 +143,7 @@ class OrderService(
 
         val totalPrice = calculateOrderTotalPrice(servicePrice, alcoholPriceToCount)
 
-        val userId = CommonUtils.getUserIdFromSecurityContext()
+        val userId = CommonUtils.getUserIdFromSecurityContext() ?: throw RuntimeException("User not found")
 
         val userEntity = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User not found")
 
@@ -278,7 +278,7 @@ class OrderService(
     }
 
     private fun getUserEntity(): User {
-        val userId = CommonUtils.getUserIdFromSecurityContext()
+        val userId = CommonUtils.getUserIdFromSecurityContext() ?: throw RuntimeException("User not found")
 
         val userEntity = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User not found")
         return userEntity

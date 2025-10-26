@@ -77,7 +77,7 @@ class ServiceModelService(
     }
 
     fun createService(request: CreateServiceRequest): GetServiceResponse {
-        val userId = CommonUtils.getUserIdFromSecurityContext()
+        val userId = CommonUtils.getUserIdFromSecurityContext() ?: throw RuntimeException("User not found")
         val user = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User with id $userId not found")
         val service = serviceMapper.mapToServiceModel(
             user = user,
