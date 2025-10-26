@@ -32,6 +32,13 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
         minimumNumberOfCalls: 5
         automaticTransitionFromOpenToHalfOpenEnabled: true
+  ratelimiter:
+    instances:
+      yandex-maps:
+        limitForPeriod: 10
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0s
+
 
 yandex-maps:
   api-key: ${YANDEX_MAPS_API_KEY}

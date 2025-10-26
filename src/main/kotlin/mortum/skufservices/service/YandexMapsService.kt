@@ -2,6 +2,7 @@ package mortum.skufservices.service
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import org.slf4j.LoggerFactory
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.MediaType
@@ -16,6 +17,7 @@ class YandexMapsService(
     private val restClient: RestClient,
 ) {
 
+    @RateLimiter(name = "yandex-maps")
     @CircuitBreaker(name = "yandex-maps")
     fun getAddressSuggestions(query: String): Map<String, Any> {
         // https://suggest-maps.yandex.ru/v1/suggest?apikey=${apiKey}&text=${encodeURIComponent(query)}&lang=ru&results=5
@@ -30,10 +32,6 @@ class YandexMapsService(
             .encode()
             .build()
             .toUri()
-
-        logger.info("GET $uri")
-        logger.info("Query $query")
-
         return restClient.get()
             .uri(uri)
             .accept(MediaType.APPLICATION_JSON)
