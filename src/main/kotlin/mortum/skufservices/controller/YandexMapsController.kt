@@ -12,7 +12,7 @@ class YandexMapsController(
     private val yandexMapsService: YandexMapsService,
 ) {
     @GetMapping
-    fun getAddressSuggestions(@RequestParam query: String): Map<String, Any> {
+    fun getAddressSuggestions(@RequestParam("query") query: String): Map<String, Any> {
         return yandexMapsService.getAddressSuggestions(query)
     }
 }
