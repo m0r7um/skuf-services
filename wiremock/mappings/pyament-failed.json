@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/payment?code=.*"
+  },
+  "response": {
+    "status": 500,
+    "fixedDelayMilliseconds": 3000
+  }
+}

@@ -845,7 +845,7 @@
             }
         }
 
-        function formSubmitHandler(e) {
+        async function formSubmitHandler(e) {
             e.preventDefault()
             if (sending) return
             var formData
@@ -873,51 +873,57 @@
                 console.log('Pay with new credit card', formData)
             }
             $error.classList.add('binking__hide')
-            sending = true
-            $submitButton.classList.add('binking__loading')
-            $submitButton.disabled = true
-            $cardNumberField.disabled = true
-            $monthField.disabled = true
-            $yearField.disabled = true
-            $codeField.disabled = true
-            setTimeout(async function () {
-                sending = false
-                $submitButton.classList.remove('binking__loading')
-                $submitButton.disabled = false
-                $cardNumberField.disabled = false
-                $monthField.disabled = false
-                $yearField.disabled = false
-                $codeField.disabled = false
-                if (selectedCardIndex === null && $codeField.value === '777') {
-                    const orderId = new URLSearchParams(window.location.search).get('id');
-                    await fetch(`http://localhost:8080/orders/setStatus/${orderId}`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({status: "AWAITING_CONFIRMATION"})
-                    }).then(async data => {
-                            if (!data.ok) {
-                                const json = await data.json()
-                                $error.innerHTML = json.message
-                                $error.classList.remove('binking__hide')
-                            } else {
-                                $form.classList.add('binking__hide')
-                                $success.classList.remove('binking__hide')
-                                $submitButton.classList.remove('binking__loading')
-                            }
+            sending = false
+            $submitButton.classList.remove('binking__loading')
+            $submitButton.disabled = false
+            $cardNumberField.disabled = false
+            $monthField.disabled = false
+            $yearField.disabled = false
+            $codeField.disabled = false
 
-                            setTimeout(() => window.location.href = 'http://localhost:8080/user-orders', 3000)
-                        }
-                    );
-                } else {
-                    var bankInfo = selectedCardIndex !== null ? savedCardsBanks[selectedCardIndex] : newCardInfo || null
-                    $error.innerHTML = bankInfo && bankInfo.bankPhone ?
-                        'Ваш банк отклонил транзакцию по указанной карте. Позвоните в ' + bankInfo.bankLocalName + ' по номеру ' + bankInfo.bankPhone + ', чтобы устранить проблемы.' :
-                        'Ваш банк отклонил транзакцию по указанной карте.'
-                    $error.classList.remove('binking__hide')
-                }
-            }, 3000)
+            try {
+                await fetch(`http://localhost:8080/bank-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                }).then(async res => {
+
+                    if (!res.ok) {
+                        const err = await res.json();
+                        $error.innerHTML = err.message;
+                        $error.classList.remove('binking__hide');
+                    } else {
+                        const orderId = new URLSearchParams(window.location.search).get('id');
+                        await fetch(`http://localhost:8080/orders/setStatus/${orderId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({status: "AWAITING_CONFIRMATION"})
+                        }).then(async data => {
+                                if (!data.ok) {
+                                    const json = await data.json()
+                                    $error.innerHTML = json.message
+                                    $error.classList.remove('binking__hide')
+                                } else {
+                                    $form.classList.add('binking__hide')
+                                    $success.classList.remove('binking__hide')
+                                    $submitButton.classList.remove('binking__loading')
+                                }
+                                setTimeout(() => window.location.href = 'http://localhost:8080/user-orders', 3000)
+                            }
+                        );
+                    }
+                })
+            } catch (e) {
+                var bankInfo = selectedCardIndex !== null ? savedCardsBanks[selectedCardIndex] : newCardInfo || null
+                $error.innerHTML = bankInfo && bankInfo.bankPhone ?
+                    'Ваш банк отклонил транзакцию по указанной карте. Позвоните в ' + bankInfo.bankLocalName + ' по номеру ' + bankInfo.bankPhone + ', чтобы устранить проблемы.' :
+                    'Ваш банк отклонил транзакцию по указанной карте.'
+                $error.classList.remove('binking__hide')
+            }
         }
 
         function resetButtonClickHandler() {

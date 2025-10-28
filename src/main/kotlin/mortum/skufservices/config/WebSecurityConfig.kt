@@ -73,6 +73,7 @@ class WebSecurityConfig(
                 auth.requestMatchers("/auth/**").permitAll()
                 auth.requestMatchers("/user/signup").permitAll()
                 auth.requestMatchers("/provider/signup").permitAll()
+                auth.requestMatchers("/payment-bank").permitAll()
                 auth.requestMatchers("/main").hasRole("USER")
                 auth.requestMatchers("/user-orders").hasRole("USER")
                 auth.requestMatchers("/user/order").hasRole("USER")
