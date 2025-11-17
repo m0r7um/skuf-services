@@ -31,10 +31,6 @@ class OrderService(
 
     private val alcoholDrinkRepository: AlcoholDrinkRepository,
     private val dumplingsRepository: DumplingsRepository,
-
-    private val alcoholDeliveryOrderContentRepository: AlcoholDeliveryOrderContentRepository,
-    private val dumplingsDeliveryOrderContentRepository: DumplingsDeliveryOrderContentRepository,
-
     private val serviceRepository: ServiceRepository,
     private val orderRepository: OrderRepository,
 
@@ -149,25 +145,21 @@ class OrderService(
 
         val orderEntity = AlcoholDeliveryOrder(
             totalPrice = totalPrice,
-            content = null,
             comment = null,
             rating = null,
             status = OrderStatus.PAYMENT_AWAITING,
             service = serviceEntity,
             user = userEntity,
             address = order.address,
+            alcoholContent = alcoholEntityToCount.filter { it.second > 0 }.map { (alcohol, count) ->
+                AlcoholOrderItem(
+                    alcoholId = alcohol.id,
+                    count = count,
+                )
+            }
         )
 
-        val orderContent = alcoholEntityToCount.filter { it.second > 0 }.map { (alcohol, count) ->
-            AlcoholDeliveryOrderContent(
-                alcohol = alcohol,
-                order = orderEntity,
-                count = count,
-            )
-        }
-
         val savedOrderEntity = alcoholDeliveryOrderRepository.save(orderEntity)
-        alcoholDeliveryOrderContentRepository.saveAll(orderContent)
 
         return AddOrderResponse(savedOrderEntity.id)
     }
@@ -239,20 +231,16 @@ class OrderService(
             status = OrderStatus.PAYMENT_AWAITING,
             service = serviceEntity,
             user = userEntity,
-            content = null,
+            dumplingsContent = dumplingsEntityToCount.filter { it.second > 0 }.map { (dumplings, count) ->
+                DumplingsOrderItem(
+                    dumplingId = dumplings.id,
+                    count = count,
+                )
+            },
             address = order.address,
         )
 
-        val orderContent = dumplingsEntityToCount.filter { it.second > 0 }.map { (alcohol, count) ->
-            DumplingsDeliveryOrderContent(
-                dumplings = alcohol,
-                order = orderEntity,
-                count = count,
-            )
-        }
-
         val savedOrder = dumplingsDeliveryOrderRepository.save(orderEntity)
-        dumplingsDeliveryOrderContentRepository.saveAll(orderContent)
 
         return AddOrderResponse(savedOrder.id)
     }

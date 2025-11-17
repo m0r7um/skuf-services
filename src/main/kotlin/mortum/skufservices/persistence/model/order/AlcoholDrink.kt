@@ -10,10 +10,6 @@ class AlcoholDrink(
     @Id
     val id: String = UUID.randomUUID().toString(),
 
-    @OneToMany
-    @JoinColumn(name = "alcohol_id")
-    val orders: Set<AlcoholDeliveryOrderContent>,
-
     val name: String,
 
     val description: String,

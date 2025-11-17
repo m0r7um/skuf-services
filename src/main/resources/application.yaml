@@ -11,6 +11,7 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+        ddl-auto: validate
     hibernate:
       ddl-auto:
     show-sql: false
