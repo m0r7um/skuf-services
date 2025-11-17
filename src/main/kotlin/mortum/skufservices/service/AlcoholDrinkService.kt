@@ -3,7 +3,6 @@ package mortum.skufservices.service
 import mortum.skufservices.dto.GetAlcoholDrinkResponse
 import mortum.skufservices.mapper.AlcoholDrinkMapper
 import mortum.skufservices.persistence.repository.order.AlcoholDrinkRepository
-import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration
 import org.springframework.stereotype.Service
 
 @Service
