@@ -212,28 +212,6 @@
             background-color: #ccc;
         }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .order-form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
         .order-form h3 {
             margin-top: 0;
             color: #005baa;
@@ -282,35 +260,6 @@
             background-color: #003f7d;
         }
 
-        .item-list {
-            margin-top: 10px;
-        }
-
-        .item-list div {
-            margin-bottom: 10px;
-        }
-
-        .item-list input {
-            width: 60px;
-            margin-left: 10px;
-        }
-
-        .order-form button {
-            width: 100%;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 4px;
-            background-color: #005baa;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 10px; /* Отступ между кнопками */
-        }
-
-        .order-form button:hover {
-            background-color: #003f7d;
-        }
-
         .order-form .back-button {
             background-color: #ccc; /* Серый цвет */
             color: #333;
@@ -324,11 +273,11 @@
 </head>
 <body>
 <div class="header">
-    <img src="../logo.png" alt="Логотип">
+    <img src="logo.png" alt="Логотип">
     <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
     <div class="nav-center">
-        <button onclick="window.location.href='http://localhost:8080/user-orders';">Мои заказы</button>
-        <button onclick="window.location.href='http://localhost:8080/main';">Все услуги</button>
+        <button onclick="globalThis.location.href='http://localhost:8080/user-orders';">Мои заказы</button>
+        <button onclick="globalThis.location.href='http://localhost:8080/main';">Все услуги</button>
     </div>
     <button class="logout-button" onclick="logout()">Выйти</button>
 </div>
@@ -358,7 +307,7 @@
 
 <script>
     function changeStatus(newStatus) {
-        const id = new URLSearchParams(window.location.search).get('id');
+        const id = new URLSearchParams(globalThis.location.search).get('id');
         const url = `http://localhost:8080/orders/setStatus/${id}`;
 
         fetch(url, {
@@ -371,11 +320,9 @@
             .then(response => response.json())
             .then(data => {
                 const status = data.status;
-                const statusButton = document.getElementById('statusButton');
                 document.getElementById('service-status').textContent = status || 'Без названия'
 
-                if (status === 'PAYMENT_AWAITING') {}
-                else {
+                if (status && status !== 'PAYMENT_AWAITING') {
                     document.querySelector('.status-buttons').style.display = 'none';
                 }
             })
@@ -383,13 +330,13 @@
     }
 
     function redirectToPayment() {
-        const id = new URLSearchParams(window.location.search).get('id');
-        window.location.href = `http://localhost:8080/payment?id=${id}`;
+        const id = new URLSearchParams(globalThis.location.search).get('id');
+        globalThis.location.href = `http://localhost:8080/payment?id=${id}`;
 
     }
 
     async function fetchServiceDetails() {
-        const serviceId = new URLSearchParams(window.location.search).get('id');
+        const serviceId = new URLSearchParams(globalThis.location.search).get('id');
         if (!serviceId) {
             console.log('Идентификатор услуги не указан');
             return;
@@ -406,30 +353,32 @@
             document.getElementById('service-name').textContent = order.title || 'Без названия';
             document.getElementById('service-type').textContent = order.type || 'Не указан';
             document.getElementById('service-description').textContent = order.description || 'Нет описания';
-            document.getElementById('service-provider').textContent = `${order.provider.name} ${order.provider.surname} (${order.provider.login})` || 'Нет описания';
-            document.getElementById('service-user').textContent = `${order.user.name} ${order.user.surname} (${order.user.login})` || 'Нет описания';
+            document.getElementById('service-provider').textContent = order.provider
+                ? `${order.provider.name} ${order.provider.surname} (${order.provider.login})`
+                : 'Нет описания';
+            document.getElementById('service-user').textContent = order.user
+                ? `${order.user.name} ${order.user.surname} (${order.user.login})`
+                : 'Нет описания';
             document.getElementById('service-address').textContent = order.address || 'Нет адреса';
             document.getElementById('service-status').textContent = status || 'Без названия'
             document.getElementById('service-price').textContent = order.totalPrice ? `Стоимость: ${order.totalPrice} ₽` : 'Стоимость: Не указана';
 
             document.getElementById('service-status').textContent = status || 'Без названия'
-            if (status === 'PAYMENT_AWAITING') {}
-            else {
+            if (status && status !== 'PAYMENT_AWAITING') {
                 document.querySelector('.status-buttons').style.display = 'none';
             }
 
         } catch (error) {
-            // TODO переделать на сообщение
             console.log(error.message);
         }
     }
 
     function goBack() {
-        window.history.back();
+        globalThis.history.back();
     }
 
     async function openOrderForm() {
-        document.getElementById('total-price').textContent = `Итоговая цена: ${window.servicePrice} ₽`;
+        document.getElementById('total-price').textContent = `Итоговая цена: ${globalThis.servicePrice} ₽`;
         document.getElementById('order-overlay').style.display = 'flex';
 
         const itemListDiv = document.getElementById('item-list');
@@ -447,7 +396,7 @@
 
             const items = await response.json();
 
-            items.forEach(item => {
+            for (const item of items) {
                 const itemDiv = document.createElement('div');
                 itemDiv.style.display = 'flex';
                 itemDiv.style.alignItems = 'center';
@@ -475,7 +424,7 @@
                 inputField.style.marginRight = '5px';
 
                 inputField.oninput = function(event) {
-                    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                    event.target.value = event.target.value.replaceAll(/\D/g, '');
                     updateTotalPrice(); // Обновить итоговую цену при изменении количества
                 };
 
@@ -493,7 +442,7 @@
                 incrementButton.style.justifyContent = 'center';
                 incrementButton.style.marginBottom = '5px';
                 incrementButton.onclick = function () {
-                    inputField.value = parseInt(inputField.value) + 1;
+                    inputField.value = Number.parseInt(inputField.value) + 1;
                     updateTotalPrice();
                 };
 
@@ -505,8 +454,7 @@
                 decrementButton.style.alignItems = 'center';
                 decrementButton.style.justifyContent = 'center';
                 decrementButton.onclick = function () {
-                    const value = Math.max(0, parseInt(inputField.value) - 1);
-                    inputField.value = value;
+                    inputField.value = Math.max(0, Number.parseInt(inputField.value) - 1);
                     updateTotalPrice();
                 };
 
@@ -521,21 +469,21 @@
                 itemListDiv.appendChild(itemDiv);
 
                 function updateTotalPrice() {
-                    totalPrice = window.servicePrice; // Сбросить общую цену перед пересчетом
+                    totalPrice = globalThis.servicePrice; // Сбросить общую цену перед пересчетом
                     let totalQuantity = 0; // Считаем общее количество товаров
 
-                    items.forEach(item => {
-                        const itemQuantity = parseInt(document.getElementById(`item-${item.id}`).value) || 0;
-                        totalPrice += itemQuantity * item.price;
+                    for (const product of items) {
+                        const itemQuantity = Number.parseInt(document.getElementById(`item-${product.id}`).value) || 0;
+                        totalPrice += itemQuantity * product.price;
                         totalQuantity += itemQuantity;
-                    });
+                    }
 
                     totalPriceDiv.textContent = `Итоговая цена: ${totalPrice} ₽`;
 
                     // Активировать или деактивировать кнопку в зависимости от общего количества
                     confirmButton.hidden = totalQuantity === 0;
                 }
-            });
+            }
         } catch (error) {
             console.log(error.message);
         }
@@ -545,7 +493,7 @@
     }
 
     function submitOrderWithoutOverlay(serviceId) {
-        const serviceType = window.serviceType
+        const serviceType = globalThis.serviceType
         fetch('http://localhost:8080/orders', {
             method: 'POST',
             headers: {
@@ -555,21 +503,20 @@
             body: JSON.stringify({ type: serviceType, service_id: serviceId }),
         })
             .then(response => response.json())
-            .then(data => {
-                window.location.href = 'http://localhost:8080/payment'
+            .then(_ => {
+                globalThis.location.href = 'http://localhost:8080/payment'
             })
-            .catch(error => {
-                // TODO убрать алерт
+            .catch(_ => {
                 console.log('Ошибка при оформлении заказа');
             });
     }
 
     // Загрузка данных услуги при загрузке страницы
-    window.onload = fetchServiceDetails;
+    globalThis.onload = fetchServiceDetails;
 
     function logout() {
         document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-        window.location.href = "http://localhost:8080/login";
+        globalThis.location.href = "http://localhost:8080/login";
     }
 </script>
 </body>

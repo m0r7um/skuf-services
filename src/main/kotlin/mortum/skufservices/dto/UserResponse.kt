@@ -4,5 +4,4 @@ data class UserResponse(
     val login: String,
     val name: String,
     val surname: String,
-) {
-}
+)

@@ -264,27 +264,6 @@
             margin-top: 10px;
         }
 
-        .item-list div {
-            margin-bottom: 10px;
-        }
-
-        .item-list input {
-            width: 60px;
-            margin-left: 10px;
-        }
-
-        .order-form button {
-            width: 100%;
-            padding: 10px 15px;
-            font-size: 16px;
-            border-radius: 4px;
-            background-color: #005baa;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 10px; /* Отступ между кнопками */
-        }
-
         .autocomplete-list {
             border: 1px solid #ccc;
             max-height: 200px;
@@ -296,18 +275,6 @@
             margin-top: 2px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-right: 20px;
-        }
-        .autocomplete-item {
-            padding: 8px;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-        .autocomplete-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .order-form button:hover {
-            background-color: #003f7d;
         }
 
         .order-form .back-button {
@@ -323,11 +290,11 @@
 </head>
 <body>
 <div class="header">
-    <img src="../logo.png" alt="Логотип">
+    <img src="logo.png" alt="Логотип">
     <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
     <div class="nav-center">
-        <button onclick="window.location.href='http://localhost:8080/user-orders';">Мои заказы</button>
-        <button onclick="window.location.href='http://localhost:8080/main';">Все услуги</button>
+        <button onclick="globalThis.location.href='http://localhost:8080/user-orders';">Мои заказы</button>
+        <button onclick="globalThis.location.href='http://localhost:8080/main';">Все услуги</button>
     </div>
     <button class="logout-button" onclick="logout()">Выйти</button>
 </div>
@@ -370,7 +337,7 @@
 </div>
 <script>
     async function fetchServiceDetails() {
-        const serviceId = new URLSearchParams(window.location.search).get('id');
+        const serviceId = new URLSearchParams(globalThis.location.search).get('id');
         if (!serviceId) {
             console.log('Идентификатор услуги не указан');
             return;
@@ -386,27 +353,29 @@
             document.getElementById('service-name').textContent = service.title || 'Без названия';
             document.getElementById('service-type').textContent = service.type || 'Не указан';
             document.getElementById('service-description').textContent = service.description || 'Нет описания';
-            document.getElementById('service-provider').textContent = `${service.user.name} ${service.user.surname} (${service.user.login})` || 'Нет описания';
+            document.getElementById('service-provider').textContent = service.user
+                ? `${service.user.name} ${service.user.surname} (${service.user.login})`
+                : 'Нет описания';
             document.getElementById('service-price').textContent = service.price ? `Стоимость: ${service.price} ₽` : 'Стоимость: Не указана';
 
             // Сохраняем тип услуги в глобальную переменную для использования при заказе
-            window.serviceType = service.type;
-            window.servicePrice = service.price;
+            globalThis.serviceType = service.type;
+            globalThis.servicePrice = service.price;
         } catch (error) {
             console.log(error.message);
         }
     }
 
     function goBack() {
-        window.history.back();
+        globalThis.history.back();
     }
 
     async function handleOrder() {
-        const serviceId = new URLSearchParams(window.location.search).get('id');
+        const serviceId = new URLSearchParams(globalThis.location.search).get('id');
 
         // Если тип услуги "DUMPLINGS" или "ALCOHOL", откроем оверлей
-        if (window.serviceType === 'DUMPLINGS' || window.serviceType === 'ALCOHOL') {
-            await openOrderForm(window.serviceType);
+        if (globalThis.serviceType === 'DUMPLINGS' || globalThis.serviceType === 'ALCOHOL') {
+            await openOrderForm();
         } else {
             // Для других типов сразу отправляем запрос на создание заказа
             submitOrderWithoutOverlay(serviceId);
@@ -414,7 +383,7 @@
     }
 
     async function openOrderForm() {
-        document.getElementById('total-price').textContent = `Итоговая цена: ${window.servicePrice} ₽`;
+        document.getElementById('total-price').textContent = `Итоговая цена: ${globalThis.servicePrice} ₽`;
         document.getElementById('order-overlay').style.display = 'flex';
 
         const itemListDiv = document.getElementById('item-list');
@@ -434,7 +403,8 @@
 
             const items = await response.json();
 
-            items.forEach(item => {
+
+            for (const item of items) {
                 const itemDiv = document.createElement('div');
                 itemDiv.style.display = 'flex';
                 itemDiv.style.alignItems = 'center';
@@ -462,7 +432,7 @@
                 inputField.style.marginRight = '5px';
 
                 inputField.oninput = function(event) {
-                    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                    event.target.value = event.target.value.replaceAll(/\D/g, '');
                     updateTotalPrice(); // Обновить итоговую цену при изменении количества
                 };
 
@@ -480,7 +450,7 @@
                 incrementButton.style.justifyContent = 'center';
                 incrementButton.style.marginBottom = '5px';
                 incrementButton.onclick = function () {
-                    inputField.value = parseInt(inputField.value) + 1;
+                    inputField.value = Number.parseInt(inputField.value) + 1;
                     updateTotalPrice();
                 };
 
@@ -492,8 +462,7 @@
                 decrementButton.style.alignItems = 'center';
                 decrementButton.style.justifyContent = 'center';
                 decrementButton.onclick = function () {
-                    const value = Math.max(0, parseInt(inputField.value) - 1);
-                    inputField.value = value;
+                    inputField.value = Math.max(0, Number.parseInt(inputField.value) - 1);
                     updateTotalPrice();
                 };
 
@@ -508,21 +477,21 @@
                 itemListDiv.appendChild(itemDiv);
 
                 function updateTotalPrice() {
-                    totalPrice = window.servicePrice; // Сбросить общую цену перед пересчетом
+                    totalPrice = globalThis.servicePrice; // Сбросить общую цену перед пересчетом
                     let totalQuantity = 0; // Считаем общее количество товаров
 
-                    items.forEach(item => {
-                        const itemQuantity = parseInt(document.getElementById(`item-${item.id}`).value) || 0;
-                        totalPrice += itemQuantity * item.price;
+                    for (const product of items) {
+                        const itemQuantity = Number.parseInt(document.getElementById(`item-${product.id}`).value) || 0;
+                        totalPrice += itemQuantity * product.price;
                         totalQuantity += itemQuantity;
-                    });
+                    }
 
                     totalPriceDiv.textContent = `Итоговая цена: ${totalPrice} ₽`;
 
                     // Активировать или деактивировать кнопку в зависимости от общего количества
                     confirmButton.hidden = totalQuantity === 0;
                 }
-            });
+            }
         } catch (error) {
             console.log(error.message);
         }
@@ -532,16 +501,16 @@
     }
 
     function submitOrder() {
-        const serviceId = new URLSearchParams(window.location.search).get('id');
-        const type = window.serviceType;
+        const serviceId = new URLSearchParams(globalThis.location.search).get('id');
+        const type = globalThis.serviceType;
         const address = document.getElementById('address-input').value
         const content = {};
 
         // Сбор данных о количестве каждого товара
         const itemListDiv = document.getElementById('item-list');
-        itemListDiv.querySelectorAll('input').forEach(input => {
-            content[input.id] = parseInt(input.value);
-        });
+        for (const input of itemListDiv.querySelectorAll('input')) {
+            content[input.id] = Number.parseInt(input.value);
+        }
 
         // Отправка заказа
         fetch('http://localhost:8080/orders', {
@@ -554,16 +523,16 @@
             .then(response => response.json())
             .then(data => {
                 const orderId = data.id
-                window.location.href = `http://localhost:8080/payment?id=${orderId}`
+                globalThis.location.href = `http://localhost:8080/payment?id=${orderId}`
             })
-            .catch(error => {
+            .catch(_ => {
                 console.log('Ошибка при оформлении заказа');
                 document.getElementById('order-overlay').style.display = 'none';
             });
     }
 
     function submitOrderWithoutOverlay(serviceId) {
-        const serviceType = window.serviceType
+        const serviceType = globalThis.serviceType
         const address = document.getElementById('address-input').value
         fetch('http://localhost:8080/orders', {
             method: 'POST',
@@ -576,20 +545,20 @@
             .then(response => response.json())
             .then(data => {
                 const orderId = data.id
-                window.location.href = `http://localhost:8080/payment?id=${orderId}`
+                globalThis.location.href = `http://localhost:8080/payment?id=${orderId}`
             })
-            .catch(error => {
+            .catch(_ => {
                 console.log('Ошибка при оформлении заказа');
             });
     }
 
     function logout() {
         document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-        window.location.href = "http://localhost:8080/login";
+        globalThis.location.href = "http://localhost:8080/login";
     }
 
     // Загрузка данных услуги при загрузке страницы
-    window.onload = fetchServiceDetails;
+    globalThis.onload = fetchServiceDetails;
     const input = document.getElementById('address-input');
     const autocompleteList = document.getElementById('autocomplete-list');
 
@@ -615,7 +584,7 @@
         autocompleteList.innerHTML = '';
         autocompleteList.hidden = suggestions.length === 0;
 
-        suggestions.forEach(suggestion => {
+        for (const suggestion of suggestions) {
             const item = document.createElement('div');
             item.className = 'autocomplete-item';
             item.textContent = suggestion.title.text;
@@ -626,7 +595,7 @@
             });
 
             autocompleteList.appendChild(item);
-        });
+        }
     }
 
     document.addEventListener('click', (e) => {

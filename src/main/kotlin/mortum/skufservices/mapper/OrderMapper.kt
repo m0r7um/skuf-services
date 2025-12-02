@@ -4,7 +4,6 @@ import mortum.skufservices.dto.GetOrderResponse
 import mortum.skufservices.dto.PageWrapper
 import mortum.skufservices.dto.UserResponse
 import mortum.skufservices.persistence.model.order.Order
-import mortum.skufservices.persistence.model.user.User
 import org.springframework.stereotype.Component
 
 @Component

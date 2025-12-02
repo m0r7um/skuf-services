@@ -87,41 +87,6 @@
             background-color: #218838;
         }
 
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown .dropdown-toggle {
-            padding: 10px 15px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .dropdown .dropdown-toggle:hover {
-            background-color: #eaeaea;
-        }
-
-        .dropdown .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            z-index: 1000;
-            width: 200px;
-            padding: 10px;
-        }
-
         .dropdown .dropdown-menu label {
             display: flex;
             align-items: center;
@@ -136,25 +101,10 @@
             margin: 0;
         }
 
-        .dropdown.open .dropdown-menu {
-            display: block;
-        }
-
         .cards {
             display: flex;
             flex-direction: column;
             gap: 15px;
-        }
-
-        .card {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: relative;
         }
 
         .card h3 {
@@ -165,29 +115,6 @@
         .card p {
             margin: 5px 0;
             color: #555;
-        }
-
-        .card .price {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #ff5722;
-        }
-
-        .card .author {
-            margin-top: 5px;
-            color: #333;
-            font-size: 14px;
-            font-style: italic;
-        }
-
-        .card .category-date {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-top: 10px;
         }
 
         .header .nav-center {
@@ -225,14 +152,6 @@
             background-color: #cc0000;
         }
 
-        .card .category {
-            color: #555;
-        }
-
-        .card .date {
-            color: #888;
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
@@ -258,10 +177,6 @@
             cursor: not-allowed;
         }
 
-        .dropdown-menu {
-            gap: 5px;
-        }
-
         .dropdown-menu > label {
             width: 48px;
         }
@@ -273,7 +188,7 @@
     <img src="logo.png" alt="Логотип">
     <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
     <div class="nav-center">
-        <button onclick="window.location.href='http://localhost:8080/provider-order';">Мои заказы</button>
+        <button onclick="globalThis.location.href='http://localhost:8080/provider-order';">Мои заказы</button>
     </div>
     <button class="logout-button" onclick="logout()">Выйти</button>
 </div>
@@ -290,33 +205,35 @@
 
 <script>
     document.querySelector('.create-button').addEventListener('click', function () {
-        window.location.href = `http://localhost:8080/service/add`;
+        globalThis.location.href = `http://localhost:8080/service/add`;
     });
 
-    window.addEventListener('click', function (e) {
+    globalThis.addEventListener('click', function (e) {
         const dropdown = document.querySelector('.dropdown');
         if (!dropdown.contains(e.target)) {
             dropdown.classList.remove('open');
         }
     });
 
+    function createPaginationButton(text, isActive = false, isDots = false) {
+        const button = document.createElement('button');
+        button.textContent = text;
+        if (isActive) button.disabled = true;
+        if (isDots) {
+            button.disabled = true;
+        } else {
+            button.addEventListener('click', () => {
+                fetchAndRenderCards(Number(text));
+            });
+        }
+        return button;
+    }
+
     function renderPagination(currentPage, totalPage) {
         const paginationContainer = document.querySelector('.pagination');
         paginationContainer.innerHTML = '';
 
-        const createButton = (text, isActive = false, isDots = false) => {
-            const button = document.createElement('button');
-            button.textContent = text;
-            if (isActive) button.disabled = true;
-            if (!isDots) {
-                button.addEventListener('click', () => {
-                    fetchAndRenderCards(Number(text));
-                });
-            } else {
-                button.disabled = true;
-            }
-            return button;
-        };
+        const createButton = createPaginationButton(text, false, false);
 
         if (totalPage ===  0) return
 
@@ -346,19 +263,7 @@
         }
     }
 
-    const createButton = (text, isActive = false, isDots = false) => {
-        const button = document.createElement('button');
-        button.textContent = text;
-        if (isActive) button.disabled = true;
-        if (!isDots) {
-            button.addEventListener('click', () => {
-                fetchAndRenderCards(Number(text));
-            });
-        } else {
-            button.disabled = true;
-        }
-        return button;
-    };
+    const createButton = createPaginationButton(text, false, false);
 
     function fetchAndRenderCards(page = 1) {
         const input = document.querySelector('.search-bar input').value;
@@ -380,7 +285,7 @@
                 const cardsContainer = document.querySelector('.cards');
                 cardsContainer.innerHTML = '';
 
-                data.data.forEach(item => {
+                for (const item of data.data) {
                     const card = document.createElement('div');
                     card.className = 'card';
 
@@ -396,11 +301,11 @@
                     card.dataset.id = item.id;
                     card.addEventListener('click', () => {
                         const id = card.dataset.id; // Получаем ID из data-id
-                        window.location.href = `http://localhost:8080/service/edit?id=${id}`;
+                        globalThis.location.href = `http://localhost:8080/service/edit?id=${id}`;
                     });
 
                     cardsContainer.appendChild(card);
-                });
+                }
 
                 renderPagination(data.currentPage, data.totalPage);
             })
@@ -412,11 +317,11 @@
     document.querySelector('.search-bar button').addEventListener('click', () => fetchAndRenderCards());
 
     // Выполнить запрос при загрузке страницы
-    window.addEventListener('DOMContentLoaded', () => fetchAndRenderCards());
+    globalThis.addEventListener('DOMContentLoaded', () => fetchAndRenderCards());
 
     function logout() {
         document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-        window.location.href = "http://localhost:8080/login";
+        globalThis.location.href = "http://localhost:8080/login";
     }
 </script>
 </body>

@@ -15,7 +15,7 @@ class OrderExceptionHandler {
     @ExceptionHandler(InvalidOrderStatusException::class)
     fun handleInvalidOrderStatusException(e: InvalidOrderStatusException): ResponseEntity<InvalidOrderStatusResponse> {
         logger.error(e.message)
-        return ResponseEntity(InvalidOrderStatusResponse("Вы уже оплатили этот заказ"), HttpStatus.BAD_REQUEST, )
+        return ResponseEntity(InvalidOrderStatusResponse("Вы уже оплатили этот заказ"), HttpStatus.BAD_REQUEST)
     }
 
     private companion object {

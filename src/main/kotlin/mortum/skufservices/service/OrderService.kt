@@ -8,6 +8,7 @@ import mortum.skufservices.dto.*
 import mortum.skufservices.dto.order.AddOrderRequest
 import mortum.skufservices.dto.order.AddOrderResponse
 import mortum.skufservices.exceptions.InvalidOrderStatusException
+import mortum.skufservices.exceptions.ServiceNotFoundExceptions
 import mortum.skufservices.mapper.OrderMapper
 import mortum.skufservices.persistence.model.order.*
 import mortum.skufservices.persistence.model.user.User
@@ -57,8 +58,8 @@ class OrderService(
         val criteriaQuery = builder.createQuery(Order::class.java)
         root = criteriaQuery.from(Order::class.java)
         predicates = generatePredicates(builder, root, search, status, userId, null)
-        val select = criteriaQuery.select(root).where() .where(*predicates)
-        val orders = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
+        val select = criteriaQuery.select(root).where(*predicates)
+        val orders: List<Order> = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
         return orderMapper.mapToPageOrderResponse(orders, page, countPage)
     }
 
@@ -74,8 +75,8 @@ class OrderService(
         val criteriaQuery = builder.createQuery(Order::class.java)
         root = criteriaQuery.from(Order::class.java)
         predicates = generatePredicates(builder, root, search, status, null, providerId)
-        val select = criteriaQuery.select(root).where() .where(*predicates)
-        val orders = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
+        val select = criteriaQuery.select(root).where(*predicates)
+        val orders: List<Order> = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
         return orderMapper.mapToPageOrderResponse(orders, page, countPage)
     }
 
@@ -128,13 +129,13 @@ class OrderService(
     private fun addAlcoholDeliveryOrder(order: AddOrderRequest.AddAlcoholDeliveryOrderRequest): AddOrderResponse {
         val content = order.content
         val drinkIds = content.keys
-        val alcoholDrinkEntities = alcoholDrinkRepository.findAllById(drinkIds)
+        val alcoholDrinkEntities: List<AlcoholDrink> = alcoholDrinkRepository.findAllById(drinkIds)
         val alcoholEntityToCount = alcoholDrinkEntities.map { 
-            it to content[it.id]!!
+            it to content.getValue(it.id)
         }
 
         val serviceId = order.serviceId
-        val serviceEntity = serviceRepository.findByIdOrNull(serviceId) ?: throw RuntimeException("Service not found")
+        val serviceEntity = serviceRepository.findByIdOrNull(serviceId) ?: throw ServiceNotFoundExceptions()
 
         val servicePrice = serviceEntity.price
         val alcoholPriceToCount = alcoholEntityToCount.map { (alcohol, count) ->
@@ -143,9 +144,9 @@ class OrderService(
 
         val totalPrice = calculateOrderTotalPrice(servicePrice, alcoholPriceToCount)
 
-        val userId = CommonUtils.getUserIdFromSecurityContext()
+        val userId = CommonUtils.getUserIdFromSecurityContext() ?: throw RuntimeException("User not found from jwt token")
 
-        val userEntity = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User not found")
+        val userEntity = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User not found from database")
 
         val orderEntity = AlcoholDeliveryOrder(
             totalPrice = totalPrice,
@@ -173,7 +174,7 @@ class OrderService(
     }
 
     private fun addWotOrder(addOrderRequest: AddOrderRequest.AddWotOrderRequest): AddOrderResponse {
-        val serviceEntity = serviceRepository.findByIdOrNull(addOrderRequest.serviceId) ?: throw RuntimeException("Service not found")
+        val serviceEntity = serviceRepository.findByIdOrNull(addOrderRequest.serviceId) ?: throw ServiceNotFoundExceptions()
 
         val userEntity = getUserEntity()
 
@@ -193,7 +194,7 @@ class OrderService(
     }
 
     private fun addAltushkaDeliveryOrder(order: AddOrderRequest.AddAltushkaDeliveryOrderRequest): AddOrderResponse {
-        val serviceEntity = serviceRepository.findByIdOrNull(order.serviceId) ?: throw RuntimeException("Service not found")
+        val serviceEntity = serviceRepository.findByIdOrNull(order.serviceId) ?: throw ServiceNotFoundExceptions()
 
         val userEntity = getUserEntity()
 
@@ -217,13 +218,13 @@ class OrderService(
 
         val content = order.content
         val dumplingsIds = content.keys
-        val dumplingsEntities = dumplingsRepository.findAllById(dumplingsIds)
+        val dumplingsEntities : List<Dumplings> = dumplingsRepository.findAllById(dumplingsIds)
         val dumplingsEntityToCount = dumplingsEntities.map {
-            it to content[it.id]!!
+            it to content.getValue(it.id)
         }
 
         val serviceId = order.serviceId
-        val serviceEntity = serviceRepository.findByIdOrNull(serviceId) ?: throw RuntimeException("Service not found")
+        val serviceEntity = serviceRepository.findByIdOrNull(serviceId) ?: throw ServiceNotFoundExceptions()
 
         val servicePrice = serviceEntity.price
         val dumplingsPriceToCount = dumplingsEntityToCount.map { (dumplings, count) ->
@@ -258,7 +259,7 @@ class OrderService(
     }
 
     private fun addLaundryOrder(order: AddOrderRequest.AddLaundryRequest): AddOrderResponse {
-        val serviceEntity = serviceRepository.findByIdOrNull(order.serviceId) ?: throw RuntimeException("Service not found")
+        val serviceEntity = serviceRepository.findByIdOrNull(order.serviceId) ?: throw ServiceNotFoundExceptions()
 
         val userEntity = getUserEntity()
 
@@ -278,7 +279,7 @@ class OrderService(
     }
 
     private fun getUserEntity(): User {
-        val userId = CommonUtils.getUserIdFromSecurityContext()
+        val userId = CommonUtils.getUserIdFromSecurityContext() ?: throw RuntimeException("User not found")
 
         val userEntity = userRepository.findByIdOrNull(userId) ?: throw RuntimeException("User not found")
         return userEntity
