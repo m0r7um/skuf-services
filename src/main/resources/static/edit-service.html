@@ -199,7 +199,7 @@
 </head>
 <body>
 <div class="header">
-  <img src="../logo.png" alt="Логотип">
+  <img src="logo.png" alt="Логотип">
   <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
   <div class="nav-center">
     <button onclick="window.location.href='http://localhost:8080/provider-order';">Мои заказы</button>
@@ -246,7 +246,7 @@
 </div>
 <script>
   async function fetchServiceDetails() {
-    const serviceId = new URLSearchParams(window.location.search).get('id');
+    const serviceId = new URLSearchParams(globalThis.location.search).get('id');
     if (!serviceId) {
       console.log('Идентификатор услуги не указан');
       return;
@@ -269,11 +269,11 @@
   }
 
   function goBack() {
-    window.history.back();
+    globalThis.history.back();
   }
 
   async function submitEditForm() {
-    const serviceId = new URLSearchParams(window.location.search).get('id');
+    const serviceId = new URLSearchParams(globalThis.location.search).get('id');
     const form = document.getElementById('edit-service-form');
 
     if (!form.reportValidity()) {
@@ -282,9 +282,9 @@
 
     const formData = new FormData(form);
     const serviceData = {};
-    formData.forEach((value, key) => {
+    for (const [key, value] of formData) {
       serviceData[key] = value;
-    });
+    }
 
     try {
       const response = await fetch(`http://localhost:8080/service/${serviceId}`, {
@@ -298,7 +298,7 @@
       if (!response.ok) {
         throw new Error('Ошибка при сохранении изменений');
       }
-      window.location.href = 'http://localhost:8080/provider-service'
+      globalThis.location.href = 'http://localhost:8080/provider-service'
     } catch (error) {
       console.log(error.message);
     }
@@ -306,15 +306,15 @@
 
   function validatePrice(input) {
     input.value = input.value
-            .replace(/[^0-9.,]/g, '') // Разрешить только цифры, точки и запятые
-            .replace(/([.,]).*?([.,])/g, '$1'); // Исключить повторные точки и запятые
+            .replaceAll(/[^0-9.,]/g, '') // Разрешить только цифры, точки и запятые
+            .replaceAll(/([.,]).*?([.,])/g, '$1'); // Исключить повторные точки и запятые
   }
 
   window.onload = fetchServiceDetails;
 
   function logout() {
     document.cookie = "Authorization=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-    window.location.href = "http://localhost:8080/login";
+    globalThis.location.href = "http://localhost:8080/login";
   }
 </script>
 </body>

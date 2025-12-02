@@ -40,7 +40,7 @@ class ServiceModelService(
         root = criteriaQuery.from(ServiceModel::class.java)
         predicates = generatePredicates(builder, root, search, type, null)
         val select = criteriaQuery.select(root).where(*predicates)
-        val services = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
+        val services: List<ServiceModel> = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
         return serviceMapper.mapToGetPageServiceResponse(services, page, countPage)
     }
 
@@ -57,8 +57,8 @@ class ServiceModelService(
         val criteriaQuery = builder.createQuery(ServiceModel::class.java)
         root = criteriaQuery.from(ServiceModel::class.java)
         predicates = generatePredicates(builder, root, search, null, userId)
-        val select = criteriaQuery.select(root).where() .where(*predicates)
-        val services = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
+        val select = criteriaQuery.select(root).where(*predicates)
+        val services: List<ServiceModel> = entityManager.createQuery(select).setFirstResult((page - 1) * PAGE_SIZE).setMaxResults(PAGE_SIZE).resultList
         return serviceMapper.mapToGetPageServiceResponse(services, page, countPage)
     }
 

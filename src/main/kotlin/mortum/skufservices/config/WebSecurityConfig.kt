@@ -35,9 +35,7 @@ class WebSecurityConfig(
 
     @Bean
     fun authenticationProvider(): DaoAuthenticationProvider {
-        val authProvider = DaoAuthenticationProvider()
-
-        authProvider.setUserDetailsService(userDetailsService)
+        val authProvider = DaoAuthenticationProvider(userDetailsService)
         authProvider.setPasswordEncoder(passwordEncoder())
 
         return authProvider

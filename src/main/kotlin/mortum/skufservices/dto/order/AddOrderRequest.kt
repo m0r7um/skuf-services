@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import mortum.skufservices.persistence.model.service.ServiceType
 
 
 @JsonTypeInfo(
@@ -40,33 +41,33 @@ sealed class AddOrderRequest {
     abstract val address: String
 
     data class AddAlcoholDeliveryOrderRequest(
-        override val type: String = "ALCOHOL",
+        override val type: String = ServiceType.ALCOHOL.name,
         override val serviceId: String,
         val content: Map<String, Int>,
         override val address: String,
     ) : AddOrderRequest()
 
     data class AddDumplingsDeliveryOrderRequest(
-        override val type: String = "DUMPLINGS",
+        override val type: String = ServiceType.DUMPLINGS.name,
         override val serviceId: String,
         val content: Map<String, Int>,
         override val address: String,
     ) : AddOrderRequest()
 
     data class AddAltushkaDeliveryOrderRequest(
-        override val type: String = "ALTUSHKA",
+        override val type: String = ServiceType.ALTUSHKA.name,
         override val serviceId: String,
         override val address: String,
     ) : AddOrderRequest()
 
     data class AddWotOrderRequest(
-        override val type: String = "WOT",
+        override val type: String = ServiceType.WOT.name,
         override val serviceId: String,
         override val address: String,
     ) : AddOrderRequest()
 
     data class AddLaundryRequest(
-        override val type: String = "LAUNDRY",
+        override val type: String = ServiceType.LAUNDRY.name,
         override val serviceId: String,
         override val address: String,
     ) : AddOrderRequest()

@@ -138,7 +138,7 @@
 </head>
 <body>
 <div class="header">
-  <img src="../logo.png" alt="Логотип">
+  <img src="logo.png" alt="Логотип">
   <h1><span class="blue">Скуф</span><span class="red">Услуги</span></h1>
 </div>
 <div class="auth-container">
@@ -218,7 +218,7 @@
         // Устанавливаем новую куку
         document.cookie = `${cookieName}=${token};path=/;max-age=${maxAge};SameSite=Lax`;
 
-        window.location.href = 'http://localhost:8080/provider-service';
+        globalThis.location.href = 'http://localhost:8080/provider-service';
       } else {
         throw new Error('Ошибка регистрации');
       }
